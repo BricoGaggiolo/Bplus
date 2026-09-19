@@ -883,6 +883,10 @@ self.addEventListener('notificationclick',e=>{
           <div class="role-opt" onclick="switchRole(1)" id="role-opt-1" style="padding:8px 12px;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:12px">
             <span>👤</span><div><div style="color:#fff;font-weight:600">Laura Bianchi</div><div style="color:var(--text3);font-size:10px">1 – Lavoratore (Varese)</div></div>
           </div>
+          <div style="border-top:1px solid var(--border);margin:4px 0"></div>
+          <div class="role-opt" onclick="modalCambiaPassword()" style="padding:8px 12px;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:12px">
+            <span>🔑</span><div><div style="color:#fff;font-weight:600">Cambia password</div><div style="color:var(--text3);font-size:10px">Modifica la tua password di accesso</div></div>
+          </div>
         </div>
       </div>
     </div>
@@ -2190,6 +2194,115 @@ function toggleRoleSwitcher(){
   const open = rs.style.display==='none';
   rs.style.display = open?'block':'none';
   if(ch) ch.textContent = open?'⌃':'⌄';
+}
+
+/* ── CAMBIA PASSWORD ──────────────────────────────────────── */
+function modalCambiaPassword(){
+  const rs=$('role-switcher'); if(rs) rs.style.display='none';
+  const u = UTENTI_DEMO[RUOLO_CORRENTE];
+  // In produzione: l'utente loggato reale. In demo: usiamo il dipendente corrispondente.
+  const d = DIPENDENTI.find(x=>{
+    if(RUOLO_CORRENTE===3) return x.ruolo===3;
+    if(RUOLO_CORRENTE===2) return x.id===2;
+    return x.id===1;
+  });
+
+  openModal('🔑 Cambia password',`
+  <div class="alert alert-blue mb12">
+    Account: <strong class="white">${u.nome}</strong> · ${u.label}
+  </div>
+  <div class="form-group mb12">
+    <label class="label">Password attuale *</label>
+    <div style="position:relative">
+      <input class="input" id="pw-old" type="password" placeholder="••••••••"
+        style="padding-right:40px">
+      <button onclick="togglePwVis('pw-old',this)"
+        style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px">👁</button>
+    </div>
+  </div>
+  <div class="form-group mb12">
+    <label class="label">Nuova password *</label>
+    <div style="position:relative">
+      <input class="input" id="pw-new" type="password" placeholder="min. 6 caratteri"
+        oninput="checkPwStrength(this.value)" style="padding-right:40px">
+      <button onclick="togglePwVis('pw-new',this)"
+        style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px">👁</button>
+    </div>
+    <!-- Barra forza password -->
+    <div style="margin-top:6px">
+      <div style="height:4px;background:var(--bg4);border-radius:2px;overflow:hidden">
+        <div id="pw-strength-bar" style="height:100%;border-radius:2px;width:0%;transition:width .25s,background .25s"></div>
+      </div>
+      <div id="pw-strength-label" class="fs10 c3 mt2"></div>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="label">Conferma nuova password *</label>
+    <div style="position:relative">
+      <input class="input" id="pw-confirm" type="password" placeholder="••••••••"
+        style="padding-right:40px">
+      <button onclick="togglePwVis('pw-confirm',this)"
+        style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text3);cursor:pointer;font-size:14px">👁</button>
+    </div>
+  </div>
+  `, '🔑 Salva nuova password', ()=>{
+    const oldPw = $('pw-old').value;
+    const newPw = $('pw-new').value;
+    const confirmPw = $('pw-confirm').value;
+
+    // Validazione password attuale (in demo: se vuota è la prima volta, accetta)
+    if(d && d.password && d.password !== oldPw){
+      showToast('Password attuale non corretta','err'); return;
+    }
+    if(newPw.length < 6){
+      showToast('La nuova password deve essere di almeno 6 caratteri','err'); return;
+    }
+    if(newPw !== confirmPw){
+      showToast('Le password non coincidono','err'); return;
+    }
+
+    // Salva la nuova password
+    if(d) d.password = newPw;
+
+    // Salva anche nel localStorage per persistenza
+    try{
+      const pwStore = JSON.parse(localStorage.getItem('bplus_passwords')||'{}');
+      pwStore[RUOLO_CORRENTE] = newPw;
+      localStorage.setItem('bplus_passwords', JSON.stringify(pwStore));
+    }catch(e){}
+
+    closeModal();
+    showToast('Password aggiornata con successo ✓','ok');
+  });
+}
+
+function togglePwVis(id, btn){
+  const el=$(id);
+  if(!el) return;
+  el.type = el.type==='password'?'text':'password';
+  btn.textContent = el.type==='password'?'👁':'🙈';
+}
+
+function checkPwStrength(pw){
+  const bar=$('pw-strength-bar');
+  const lbl=$('pw-strength-label');
+  if(!bar||!lbl) return;
+  let score=0;
+  if(pw.length>=6) score++;
+  if(pw.length>=10) score++;
+  if(/[A-Z]/.test(pw)) score++;
+  if(/[0-9]/.test(pw)) score++;
+  if(/[^A-Za-z0-9]/.test(pw)) score++;
+  const cfg=[
+    {w:'0%',bg:'transparent',t:''},
+    {w:'25%',bg:'#b71c1c',t:'Debole'},
+    {w:'50%',bg:'#f9a825',t:'Discreta'},
+    {w:'75%',bg:'#1b5e20',t:'Buona'},
+    {w:'100%',bg:'#00897b',t:'Ottima'},
+  ][Math.min(score,4)];
+  bar.style.width=cfg.w; bar.style.background=cfg.bg;
+  lbl.textContent=cfg.t;
+  lbl.style.color=cfg.bg;
 }
 
 /* Nasconde/mostra voci di menu in base al ruolo */

@@ -1082,6 +1082,7 @@ const DIPENDENTI = [
     policyDom:'nessuna',
     oreRecupero:0,
     uscita18:{n:0,su:5},
+    inTurni:false,
     riposoSett:'Domenica', riposoDom:[], mobilita:['GAG','COC','DAV','VAR'],
     stato:'attivo' },
 
@@ -1096,6 +1097,7 @@ const DIPENDENTI = [
     policyDom:'nessuna',
     oreRecupero:0,
     uscita18:{n:0,su:5},
+    inTurni:false,
     riposoSett:'Domenica', riposoDom:[], mobilita:['GAG','COC','DAV','VAR'],
     stato:'attivo' },
 ];
@@ -2353,11 +2355,20 @@ function openDipendente(id, forceEdit=false){
       <div class="form-group"><label class="label">Telefono</label><input class="input" id="dd-tel" value="${d.tel}" ${dis}></div>
       <div class="form-group"><label class="label">Nuova password</label><input class="input" id="dd-pw" type="password" placeholder="${ro?'——':'Lascia vuoto = nessuna modifica'}" ${dis}></div>
       <div class="form-group"><label class="label">Ruolo *</label>
-        <select class="select" id="dd-ruolo" ${dis}>
+        <select class="select" id="dd-ruolo" ${dis} onchange="ddToggleInTurni()">
           <option value="1" ${d.ruolo===1?'selected':''}>1 – Lavoratore</option>
           <option value="2" ${d.ruolo===2?'selected':''}>2 – Direttore</option>
           <option value="3" ${d.ruolo===3?'selected':''}>3 – Titolare</option>
         </select>
+      </div>
+      <div class="form-group" id="dd-in-turni-wrap" ${d.ruolo!==3?'style="display:none"':''}>
+        <label class="label">Inserimento nei turni</label>
+        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:8px 0">
+          <input type="checkbox" id="dd-in-turni" ${d.inTurni?'checked':''} ${dis}
+            style="accent-color:var(--red);width:16px;height:16px">
+          <span class="fs12 white">Includi nei turni negozio</span>
+          <span class="fs11 c3">(di default i titolari non compaiono in griglia)</span>
+        </label>
       </div>
       <div class="form-group"><label class="label">Negozio assegnato *</label>
         <select class="select" id="dd-negozio" ${dis}>
@@ -2551,6 +2562,7 @@ function openDipendente(id, forceEdit=false){
       d.email        = $('dd-email').value.trim();
       d.tel          = $('dd-tel').value.trim();
       d.ruolo        = parseInt($('dd-ruolo').value);
+      d.inTurni      = $('dd-in-turni')?.checked || false;
       d.negozio      = $('dd-negozio').value;
       d.contratto    = $('dd-contratto').value;
       d.oreSett      = parseInt($('dd-ore').value)||0;
@@ -2594,6 +2606,12 @@ function setCG(n){
     if(el){ el.className='sk-dot '+(i<=n?'filled':'empty'); }
   });
   const lbl=$('cg-label'); if(lbl) lbl.textContent=n+'/5';
+}
+
+function ddToggleInTurni(){
+  const ruolo=parseInt(($('dd-ruolo')||{value:1}).value);
+  const wrap=$('dd-in-turni-wrap');
+  if(wrap) wrap.style.display=ruolo===3?'':'none';
 }
 
 function aggiornaU18(){
@@ -3038,7 +3056,7 @@ function modalAggiungiLavoratore(storeId){
   const giàAssegnati = ASSEGNAZIONI_SETTIMANA[storeId]||[];
 
   // Tutti i dipendenti non ancora assegnati a questo negozio questa settimana
-  const disponibili = DIPENDENTI.filter(d=>!giàAssegnati.includes(d.id) && d.ruolo!==3);
+  const disponibili = DIPENDENTI.filter(d=>!giàAssegnati.includes(d.id) && (d.ruolo!==3 || d.inTurni===true));
 
   openModal(`👤 Aggiungi lavoratori – Brico+ ${s.nome}`,`
   <div class="fs11 c3 mb12">
@@ -3198,7 +3216,7 @@ function initAssegnazioni(shiftsStorico){
   STORES.forEach(s=>{
     if(shiftsStorico){
       const dipConTurni = DIPENDENTI
-        .filter(d=>d.ruolo!==3)
+        .filter(d=>d.ruolo!==3 || d.inTurni===true)
         .filter(d=>{
           const sh = shiftsStorico[d.id];
           return sh && sh.some(x=>typeof x==='object');
@@ -3207,7 +3225,7 @@ function initAssegnazioni(shiftsStorico){
       ASSEGNAZIONI_SETTIMANA[s.id] = dipConTurni.map(d=>d.id);
     } else {
       ASSEGNAZIONI_SETTIMANA[s.id] = DIPENDENTI
-        .filter(d=>d.negozio===s.id && d.ruolo!==3)
+        .filter(d=>d.negozio===s.id && (d.ruolo!==3 || d.inTurni===true))
         .map(d=>d.id);
     }
   });
@@ -3215,8 +3233,9 @@ function initAssegnazioni(shiftsStorico){
 
 function getDipendentiNegozioSettimana(storeId){
   const ids = ASSEGNAZIONI_SETTIMANA[storeId] || [];
-  // I titolari (ruolo 3) non compaiono nei turni negozio
-  return ids.map(id=>DIPENDENTI.find(d=>d.id===id)).filter(d=>d && d.ruolo!==3);
+  // I titolari compaiono solo se hanno inTurni=true
+  return ids.map(id=>DIPENDENTI.find(d=>d.id===id))
+    .filter(d=>d && (d.ruolo!==3 || d.inTurni===true));
 }
 
 function aggiungiDipendenteNegozio(storeId, dipId){

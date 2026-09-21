@@ -3038,7 +3038,7 @@ function modalAggiungiLavoratore(storeId){
   const giàAssegnati = ASSEGNAZIONI_SETTIMANA[storeId]||[];
 
   // Tutti i dipendenti non ancora assegnati a questo negozio questa settimana
-  const disponibili = DIPENDENTI.filter(d=>!giàAssegnati.includes(d.id));
+  const disponibili = DIPENDENTI.filter(d=>!giàAssegnati.includes(d.id) && d.ruolo!==3);
 
   openModal(`👤 Aggiungi lavoratori – Brico+ ${s.nome}`,`
   <div class="fs11 c3 mb12">
@@ -3197,8 +3197,8 @@ function initAssegnazioni(shiftsStorico){
   ASSEGNAZIONI_SETTIMANA = {};
   STORES.forEach(s=>{
     if(shiftsStorico){
-      // Carica dallo storico: i dipendenti che avevano turni in quel negozio
       const dipConTurni = DIPENDENTI
+        .filter(d=>d.ruolo!==3)
         .filter(d=>{
           const sh = shiftsStorico[d.id];
           return sh && sh.some(x=>typeof x==='object');
@@ -3207,7 +3207,7 @@ function initAssegnazioni(shiftsStorico){
       ASSEGNAZIONI_SETTIMANA[s.id] = dipConTurni.map(d=>d.id);
     } else {
       ASSEGNAZIONI_SETTIMANA[s.id] = DIPENDENTI
-        .filter(d=>d.negozio===s.id)
+        .filter(d=>d.negozio===s.id && d.ruolo!==3)
         .map(d=>d.id);
     }
   });
@@ -3215,7 +3215,8 @@ function initAssegnazioni(shiftsStorico){
 
 function getDipendentiNegozioSettimana(storeId){
   const ids = ASSEGNAZIONI_SETTIMANA[storeId] || [];
-  return ids.map(id=>DIPENDENTI.find(d=>d.id===id)).filter(Boolean);
+  // I titolari (ruolo 3) non compaiono nei turni negozio
+  return ids.map(id=>DIPENDENTI.find(d=>d.id===id)).filter(d=>d && d.ruolo!==3);
 }
 
 function aggiungiDipendenteNegozio(storeId, dipId){

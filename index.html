@@ -864,24 +864,24 @@ self.addEventListener('notificationclick',e=>{
     <div class="sidebar-footer">
       <div id="user-card-wrap">
         <div class="user-card" onclick="toggleRoleSwitcher()" style="cursor:pointer" title="Cambia ruolo demo">
-          <div class="avatar" id="sb-avatar">MR</div>
+          <div class="avatar" id="sb-avatar">SS</div>
           <div class="user-info">
-            <div class="user-name" id="sb-name">Marco Rossi</div>
+            <div class="user-name" id="sb-name">Stefano Santelena</div>
             <div class="user-role" id="sb-role">Titolare</div>
           </div>
           <span style="font-size:12px;color:var(--text3)" id="sb-chevron">⌄</span>
         </div>
         <!-- Role switcher dropdown -->
         <div id="role-switcher" style="display:none;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--radius);margin-top:4px;overflow:hidden">
-          <div style="padding:6px 10px;font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px">Demo – Cambia ruolo</div>
+          <div style="padding:6px 10px;font-size:9px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px">Seleziona account</div>
           <div class="role-opt" onclick="switchRole(3)" id="role-opt-3" style="padding:8px 12px;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:12px;background:var(--red-bg);border-left:3px solid var(--red)">
-            <span>👤</span><div><div style="color:#fff;font-weight:600">Marco Rossi</div><div style="color:var(--text3);font-size:10px">3 – Titolare</div></div>
+            <span>👤</span><div><div style="color:#fff;font-weight:600">Stefano Santelena</div><div style="color:var(--text3);font-size:10px">Titolare</div></div>
           </div>
           <div class="role-opt" onclick="switchRole(2)" id="role-opt-2" style="padding:8px 12px;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:12px">
-            <span>👤</span><div><div style="color:#fff;font-weight:600">Marco Ferrari</div><div style="color:var(--text3);font-size:10px">2 – Direttore (Gaggiolo)</div></div>
+            <span>👤</span><div><div style="color:#fff;font-weight:600">Davide Piaia</div><div style="color:var(--text3);font-size:10px">Titolare</div></div>
           </div>
           <div class="role-opt" onclick="switchRole(1)" id="role-opt-1" style="padding:8px 12px;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:12px">
-            <span>👤</span><div><div style="color:#fff;font-weight:600">Laura Bianchi</div><div style="color:var(--text3);font-size:10px">1 – Lavoratore (Varese)</div></div>
+            <span>👤</span><div><div style="color:#fff;font-weight:600">—</div><div style="color:var(--text3);font-size:10px">Nessun lavoratore</div></div>
           </div>
           <div style="border-top:1px solid var(--border);margin:4px 0"></div>
           <div class="role-opt" onclick="modalCambiaPassword()" style="padding:8px 12px;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:12px">
@@ -1072,146 +1072,43 @@ const CAP_SPECIFICHE_LABEL = {
 
 const DIPENDENTI = [
   { id:1,
-    nome:'Laura', cognome:'Bianchi', email:'l.bianchi@brico.it', tel:'+39 333 1111111', password:'',
-    ruolo:1, negozio:'VAR',
-    capGenerali:4,
-    cap:{ tintometro:true, chiavi:false, muletto:false, cassa:true, taglioLegno:false, kasanova:false },
+    nome:'Stefano', cognome:'Santelena', email:'s.santelena@laquattrosrl.it',
+    tel:'', password:'LaQuattro1',
+    ruolo:3, negozio:'GAG',
+    capGenerali:5,
+    cap:{ tintometro:false, chiavi:true, muletto:false, cassa:false, taglioLegno:false, kasanova:false },
     contratto:'indeterminato', oreSett:40,
     pausaTipo:'flessibile', pausaMinuti:30, pausaOraIn:'', pausaOraOut:'',
-    policyDom:'1 ogni 2',
-    oreRecupero:2,
-    ferieResidui:18, uscita18:{n:1,su:5}, oreRol:8, permessiResidui:2,
-    riposoSett:'Mercoledì', riposoDom:['Lunedì'], mobilita:['VAR'],
+    policyDom:'nessuna',
+    oreRecupero:0,
+    uscita18:{n:0,su:5},
+    riposoSett:'Domenica', riposoDom:[], mobilita:['GAG','COC','DAV','VAR'],
     stato:'attivo' },
 
   { id:2,
-    nome:'Marco', cognome:'Ferrari', email:'m.ferrari@brico.it', tel:'+39 333 2222222', password:'',
-    ruolo:2, negozio:'GAG',
+    nome:'Davide', cognome:'Piaia', email:'d.piaia@laquattrosrl.it',
+    tel:'', password:'LaQuattro2',
+    ruolo:3, negozio:'GAG',
     capGenerali:5,
-    cap:{ tintometro:true, chiavi:true, muletto:false, cassa:true, taglioLegno:false, kasanova:false },
-    contratto:'indeterminato', oreSett:44,
-    pausaTipo:'fissa', pausaMinuti:0, pausaOraIn:'13:00', pausaOraOut:'14:00',
-    policyDom:'nessuna',
-    oreRecupero:0,
-    ferieResidui:22, uscita18:{n:2,su:5}, oreRol:0, permessiResidui:3,
-    riposoSett:'Domenica', riposoDom:[], mobilita:['GAG','VAR'],
-    stato:'attivo' },
-
-  { id:3,
-    nome:'Giulia', cognome:'Russo', email:'g.russo@brico.it', tel:'+39 333 3333333', password:'',
-    ruolo:1, negozio:'COC',
-    capGenerali:3,
-    cap:{ tintometro:false, chiavi:false, muletto:false, cassa:true, taglioLegno:true, kasanova:false },
-    contratto:'a termine', oreSett:30,
-    pausaTipo:'flessibile', pausaMinuti:30, pausaOraIn:'', pausaOraOut:'',
-    policyDom:'1 ogni 2',
-    oreRecupero:0,
-    ferieResidui:12, uscita18:{n:0,su:5}, oreRol:4, permessiResidui:1,
-    riposoSett:'Giovedì', riposoDom:['Sabato'], mobilita:['COC'],
-    stato:'attivo' },
-
-  { id:4,
-    nome:'Andrea', cognome:'Colombo', email:'a.colombo@brico.it', tel:'+39 333 4444444', password:'',
-    ruolo:1, negozio:'DAV',
-    capGenerali:3,
-    cap:{ tintometro:false, chiavi:false, muletto:true, cassa:false, taglioLegno:true, kasanova:false },
+    cap:{ tintometro:false, chiavi:true, muletto:false, cassa:false, taglioLegno:false, kasanova:false },
     contratto:'indeterminato', oreSett:40,
     pausaTipo:'flessibile', pausaMinuti:30, pausaOraIn:'', pausaOraOut:'',
     policyDom:'nessuna',
-    oreRecupero:4,
-    ferieResidui:6, uscita18:{n:1,su:5}, oreRol:16, permessiResidui:0,
-    riposoSett:'Martedì', riposoDom:[], mobilita:['DAV'],
-    stato:'assente' },
-
-  { id:5,
-    nome:'Sara', cognome:'Esposito', email:'s.esposito@brico.it', tel:'+39 333 5555555', password:'',
-    ruolo:1, negozio:'VAR',
-    capGenerali:4,
-    cap:{ tintometro:true, chiavi:true, muletto:false, cassa:true, taglioLegno:false, kasanova:false },
-    contratto:'indeterminato', oreSett:40,
-    pausaTipo:'flessibile', pausaMinuti:30, pausaOraIn:'', pausaOraOut:'',
-    policyDom:'1 ogni 2',
     oreRecupero:0,
-    ferieResidui:20, uscita18:{n:2,su:6}, oreRol:0, permessiResidui:4,
-    riposoSett:'Lunedì', riposoDom:['Mercoledì'], mobilita:['VAR','GAG'],
-    stato:'attivo' },
-
-  { id:6,
-    nome:'Luca', cognome:'Romano', email:'l.romano@brico.it', tel:'+39 333 6666666', password:'',
-    ruolo:1, negozio:'GAG',
-    capGenerali:3,
-    cap:{ tintometro:false, chiavi:false, muletto:true, cassa:true, taglioLegno:true, kasanova:false },
-    contratto:'indeterminato', oreSett:36,
-    pausaTipo:'flessibile', pausaMinuti:30, pausaOraIn:'', pausaOraOut:'',
-    policyDom:'1 ogni 2',
-    oreRecupero:1,
-    ferieResidui:14, uscita18:{n:1,su:5}, oreRol:8, permessiResidui:2,
-    riposoSett:'Mercoledì', riposoDom:['Lunedì'], mobilita:['GAG'],
-    stato:'ferie' },
-
-  { id:7,
-    nome:'Elena', cognome:'Martini', email:'e.martini@brico.it', tel:'+39 333 7777777', password:'',
-    ruolo:1, negozio:'VAR',
-    capGenerali:2,
-    cap:{ tintometro:false, chiavi:false, muletto:false, cassa:true, taglioLegno:false, kasanova:true },
-    contratto:'a termine', oreSett:32,
-    pausaTipo:'flessibile', pausaMinuti:30, pausaOraIn:'', pausaOraOut:'',
-    policyDom:'1 ogni 2',
-    oreRecupero:0,
-    ferieResidui:9, uscita18:{n:0,su:5}, oreRol:0, permessiResidui:1,
-    riposoSett:'Lunedì', riposoDom:['Giovedì'], mobilita:['VAR'],
-    stato:'attivo' },
-
-  { id:8,
-    nome:'Paolo', cognome:'Ricci', email:'p.ricci@brico.it', tel:'+39 333 8888888', password:'',
-    ruolo:1, negozio:'DAV',
-    capGenerali:5,
-    cap:{ tintometro:true, chiavi:true, muletto:true, cassa:false, taglioLegno:true, kasanova:false },
-    contratto:'indeterminato', oreSett:40,
-    pausaTipo:'fissa', pausaMinuti:0, pausaOraIn:'13:00', pausaOraOut:'14:00',
-    policyDom:'1 ogni 2',
-    oreRecupero:0,
-    ferieResidui:26, uscita18:{n:3,su:6}, oreRol:4, permessiResidui:3,
-    riposoSett:'Mercoledì', riposoDom:['Sabato'], mobilita:['DAV','COC'],
+    uscita18:{n:0,su:5},
+    riposoSett:'Domenica', riposoDom:[], mobilita:['GAG','COC','DAV','VAR'],
     stato:'attivo' },
 ];
 
-const ASSENZE = [
-  {id:1, dipId:1, dip:'Laura Bianchi',  tipo:'Ferie',    da:'2026-06-16', a:'2026-06-27', stato:'approvato',  negozio:'VAR', note:''},
-  {id:2, dipId:4, dip:'Andrea Colombo', tipo:'Malattia', da:'2026-06-09', a:'2026-06-12', stato:'approvato',  negozio:'DAV', note:'Certificato medico allegato'},
-  {id:3, dipId:3, dip:'Giulia Russo',   tipo:'Permesso', da:'2026-06-20', a:'2026-06-20', stato:'in attesa',  negozio:'COC', note:'Visita medica'},
-  {id:4, dipId:6, dip:'Luca Romano',    tipo:'Ferie',    da:'2026-06-23', a:'2026-06-30', stato:'approvato',  negozio:'GAG', note:''},
-  {id:5, dipId:5, dip:'Sara Esposito',  tipo:'Corso',    da:'2026-06-25', a:'2026-06-26', stato:'in attesa',  negozio:'VAR', note:'Corso sicurezza sul lavoro'},
-  {id:6, dipId:7, dip:'Elena Martini',  tipo:'Permesso', da:'2026-06-18', a:'2026-06-18', stato:'in attesa',  negozio:'VAR', note:''},
-  {id:7, dipId:2, dip:'Marco Ferrari',  tipo:'Ferie',    da:'2026-07-07', a:'2026-07-18', stato:'approvato',  negozio:'GAG', note:''},
-  {id:8, dipId:8, dip:'Paolo Ricci',    tipo:'Permesso', da:'2026-07-03', a:'2026-07-03', stato:'approvato',  negozio:'DAV', note:'Permesso retribuito'},
-  {id:9, dipId:5, dip:'Sara Esposito',  tipo:'Ferie',    da:'2026-07-21', a:'2026-07-31', stato:'in attesa',  negozio:'VAR', note:''},
-];
+const ASSENZE = [];
 
-const SCADENZE = [
-  {id:1, desc:'Contratto Giulia Russo',           tipo:'Contratto',  data:'2024-09-09', negozio:'COC', urgenza:'alta'},
-  {id:2, desc:'Contratto Sara Esposito',          tipo:'Contratto',  data:'2025-01-07', negozio:'VAR', urgenza:'alta'},
-  {id:3, desc:'Attestato muletto – Andrea Colombo',tipo:'Attestato', data:'2024-10-15', negozio:'DAV', urgenza:'media'},
-  {id:4, desc:'Formazione sicurezza – Luca Romano',tipo:'Formazione',data:'2024-11-30', negozio:'GAG', urgenza:'bassa'},
-  {id:5, desc:'DPI guanti – Varese',              tipo:'DPI',        data:'2024-09-01', negozio:'VAR', urgenza:'media'},
-  {id:6, desc:'Visita medica – Paolo Ricci',      tipo:'Documento',  data:'2024-12-15', negozio:'DAV', urgenza:'bassa'},
-  {id:7, desc:'Rinnovo antincendio – Gaggiolo',   tipo:'Formazione', data:'2024-10-01', negozio:'GAG', urgenza:'media'},
-];
+const SCADENZE = [];
 
 // Ogni turno è un oggetto: {in: entrata, outP: uscita pausa, inP: rientro pausa, out: uscita}
 // oppure stringa 'riposo' / 'ferie' / 'malattia'
 function turno(i,outP,inP,o){ return {in:i,outP,inP,out:o}; }
 
-const SHIFTS_WEEK = {
-  1: [turno('08:00','12:30','13:00','17:00'), turno('08:00','12:30','13:00','17:00'), 'riposo', turno('08:00','12:30','13:00','17:00'), turno('08:00','12:30','13:00','17:00'), turno('09:00','13:00','13:30','18:00'), 'riposo'],
-  2: [turno('07:30','12:00','12:30','16:30'), turno('07:30','12:00','12:30','16:30'), turno('07:30','12:00','12:30','16:30'), turno('07:30','12:00','12:30','16:30'), 'riposo', turno('07:30','12:00','12:30','16:30'), 'riposo'],
-  3: ['riposo', turno('11:00','14:00','14:30','19:00'), turno('11:00','14:00','14:30','19:00'), turno('11:00','14:00','14:30','19:00'), turno('11:00','14:00','14:30','19:00'), turno('10:00','13:30','14:00','19:00'), turno('10:00','12:00','—','14:00')],
-  4: ['ferie','ferie','ferie','ferie','ferie','ferie','ferie'],
-  5: [turno('09:00','13:00','13:30','18:00'), 'riposo', turno('09:00','13:00','13:30','18:00'), turno('09:00','13:00','13:30','18:00'), turno('09:00','13:00','13:30','18:00'), turno('08:00','12:30','13:00','17:00'), 'riposo'],
-  6: [turno('12:00','—','—','20:00'), turno('12:00','—','—','20:00'), 'riposo', turno('12:00','—','—','20:00'), turno('12:00','—','—','20:00'), turno('11:00','15:00','15:30','20:00'), turno('11:00','13:00','—','17:00')],
-  7: [turno('09:00','13:00','13:30','17:00'), 'riposo', turno('09:00','13:00','13:30','17:00'), turno('09:00','13:00','13:30','17:00'), turno('09:00','13:00','13:30','17:00'), turno('09:00','13:00','13:30','17:00'), 'riposo'],
-  8: [turno('08:00','12:30','13:00','17:00'), turno('08:00','12:30','13:00','17:00'), 'riposo', turno('08:00','12:30','13:00','17:00'), turno('08:00','12:30','13:00','17:00'), turno('08:00','12:30','13:00','18:00'), 'riposo'],
-};
+const SHIFTS_WEEK = {};
 
 function shiftLabel(s){
   if(typeof s==='string') return s;
@@ -1235,7 +1132,7 @@ function shiftHours(s){
      weekStart: 'YYYY-MM-DD',      // lunedì della settimana
      weekLabel: '29 Lug – 4 Ago 2024',
      pubblicatoIl: ISOString,
-     pubblicatoDa: 'Marco Rossi',
+     pubblicatoDa: UTENTI_DEMO[3].nome,
      shifts: { [dipId]: [7 turni] },   // snapshot turni per dipendente
      storeSnapshot: { [storeId]: {minGiorno:[...], minPausa:[...]} } // config negozio al momento pubblicazione
    }
@@ -1269,7 +1166,7 @@ let STORICO_SETTIMANE = dbLoadStorico();
 if(STORICO_SETTIMANE.length===0){
   const settimanaPrecedente1={
     weekStart:'2024-07-15', weekLabel:formatWeekLabel('2024-07-15'),
-    pubblicatoIl:new Date(Date.now()-14*86400000).toISOString(), pubblicatoDa:'Marco Rossi',
+    pubblicatoIl:new Date(Date.now()-14*86400000).toISOString(), pubblicatoDa:UTENTI_DEMO[3].nome,
     shifts:{
       1:[turno('09:00','13:00','13:30','18:00'),'riposo',turno('09:00','13:00','13:30','18:00'),turno('09:00','13:00','13:30','18:00'),turno('09:00','13:00','13:30','18:00'),turno('08:00','12:30','13:00','17:00'),'riposo'],
       2:[turno('07:30','12:00','12:30','16:30'),turno('07:30','12:00','12:30','16:30'),turno('07:30','12:00','12:30','16:30'),turno('07:30','12:00','12:30','16:30'),'riposo',turno('07:30','12:00','12:30','16:30'),'riposo'],
@@ -1284,7 +1181,7 @@ if(STORICO_SETTIMANE.length===0){
   };
   const settimanaPrecedente2={
     weekStart:'2024-07-22', weekLabel:formatWeekLabel('2024-07-22'),
-    pubblicatoIl:new Date(Date.now()-7*86400000).toISOString(), pubblicatoDa:'Marco Rossi',
+    pubblicatoIl:new Date(Date.now()-7*86400000).toISOString(), pubblicatoDa:UTENTI_DEMO[3].nome,
     shifts:{
       1:[turno('08:00','12:30','13:00','17:00'),turno('08:00','12:30','13:00','17:00'),'riposo',turno('08:00','12:30','13:00','17:00'),turno('08:00','12:30','13:00','17:00'),turno('09:00','13:00','13:30','18:00'),'riposo'],
       2:[turno('07:30','12:00','12:30','16:30'),turno('07:30','12:00','12:30','16:30'),turno('07:30','12:00','12:30','16:30'),turno('07:30','12:00','12:30','16:30'),'riposo',turno('07:30','12:00','12:30','16:30'),'riposo'],
@@ -1323,7 +1220,7 @@ function pubblicaSettimanaCorrente(){
     weekStart: CURRENT_WEEK_START,
     weekLabel: CURRENT_WEEK_LABEL,
     pubblicatoIl: new Date().toISOString(),
-    pubblicatoDa: 'Marco Rossi',
+    pubblicatoDa: UTENTI_DEMO[3].nome,
     shifts: JSON.parse(JSON.stringify(SHIFTS_WEEK)),
     storeSnapshot: STORES.reduce((acc,s)=>{
       acc[s.id]={minGiorno:[...s.minGiorno], minPausa:[...s.minPausa], chiuso:[...s.chiuso]};
@@ -1723,7 +1620,7 @@ function renderDashboardDirettore(){
 
 /* ── DASHBOARD LAVORATORE ─────────────────────────────────── */
 function renderDashboardLavoratore(){
-  const d = DIPENDENTI.find(x=>x.nome==='Laura' && x.negozio==='VAR') || DIPENDENTI.find(x=>x.ruolo===1);
+  const d = DIPENDENTI.find(x=>x.ruolo===3);
   if(!d) return '<div class="card"><p class="fs13 c3">Profilo non trovato.</p></div>';
   const oggi = new Date().toISOString().slice(0,10);
   const dowIdx = new Date().getDay()===0 ? 6 : new Date().getDay()-1;
@@ -2152,9 +2049,9 @@ function updateBottombar(){
 }
 
 const UTENTI_DEMO = {
-  3: { nome:'Marco Rossi',   initials:'MR', ruolo:3, negozio:null,  label:'Titolare' },
-  2: { nome:'Marco Ferrari', initials:'MF', ruolo:2, negozio:'GAG', label:'Direttore' },
-  1: { nome:'Laura Bianchi', initials:'LB', ruolo:1, negozio:'VAR', label:'Lavoratore' },
+  3: { nome:'Stefano Santelena', initials:'SS', ruolo:3, negozio:null, label:'Titolare' },
+  2: { nome:'Davide Piaia',      initials:'DP', ruolo:3, negozio:null, label:'Titolare' },
+  1: { nome:'Stefano Santelena', initials:'SS', ruolo:3, negozio:null, label:'Titolare' },
 };
 let RUOLO_CORRENTE = 3;
 let NEGOZIO_CORRENTE = null;
@@ -5211,59 +5108,7 @@ function aggiornaReportAssenze(){
      note: string
    }
 */
-let CORSI = [
-  {
-    id:1,
-    titolo:'Formazione sicurezza sul lavoro',
-    descrizione:'Corso obbligatorio D.Lgs. 81/08 – modulo base',
-    ente:'Ente Bilaterale Commercio',
-    sessioni:[
-      {data:'2024-09-10', oraIn:'09:00', oraOut:'13:00'},
-      {data:'2024-09-11', oraIn:'09:00', oraOut:'13:00'},
-    ],
-    partecipanti:[
-      {dipId:1, sessioni:[0,1], stato:'confermato'},
-      {dipId:5, sessioni:[0,1], stato:'confermato'},
-      {dipId:7, sessioni:[0],   stato:'invitato'},
-    ],
-    stato:'programmato',
-    obbligatorio:true,
-    note:'Attestato valido 5 anni'
-  },
-  {
-    id:2,
-    titolo:'Utilizzo tintometro – avanzato',
-    descrizione:'Tecniche avanzate miscelazione colori e gestione campionari',
-    ente:'Sikkens Academy',
-    sessioni:[
-      {data:'2024-08-20', oraIn:'14:00', oraOut:'18:00'},
-    ],
-    partecipanti:[
-      {dipId:2, sessioni:[0], stato:'confermato'},
-      {dipId:8, sessioni:[0], stato:'confermato'},
-    ],
-    stato:'completato',
-    obbligatorio:false,
-    note:''
-  },
-  {
-    id:3,
-    titolo:'Patentino muletto',
-    descrizione:'Corso abilitazione carrelli elevatori – primo rilascio',
-    ente:'INAIL – sede Varese',
-    sessioni:[
-      {data:'2024-10-07', oraIn:'08:00', oraOut:'17:00'},
-      {data:'2024-10-08', oraIn:'08:00', oraOut:'12:00'},
-    ],
-    partecipanti:[
-      {dipId:3, sessioni:[0,1], stato:'invitato'},
-      {dipId:7, sessioni:[0,1], stato:'invitato'},
-    ],
-    stato:'programmato',
-    obbligatorio:false,
-    note:'Esame pratico il secondo giorno'
-  },
-];
+let CORSI = [];
 
 /* ── HELPERS ────────────────────────────────────────────── */
 function corsoStatoBadge(s){
@@ -5909,7 +5754,7 @@ function notificaModificaTurno(dipId, dayIdx, nuovoTurno){
 
   // Se è il Direttore a modificare → notifica anche il Titolare
   if(RUOLO_CORRENTE===2){
-    const direttore=UTENTI_DEMO[2];
+    const direttore=UTENTI_DEMO[RUOLO_CORRENTE];
     const negozio=STORES.find(s=>s.id===NEGOZIO_CORRENTE);
     pushNotifica({
       titolo:`Modifica turno da Direttore – Brico+ ${negozio?.nome||''}`,

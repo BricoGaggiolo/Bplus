@@ -2133,43 +2133,53 @@ function toggleLoginPw(){
 }
 
 function doLogin(){
-  const emailRaw=($('login-email')||{value:''}).value;
-  const pwRaw=($('login-pw')||{value:''}).value;
-  const email=emailRaw.trim().toLowerCase().replace(/\s/g,'');
-  const pw=pwRaw.trim();
-  const errEl=$('login-err');
+  const emailRaw = document.getElementById('login-email')?.value || '';
+  const pwRaw    = document.getElementById('login-pw')?.value    || '';
+  const email    = emailRaw.trim().toLowerCase().replace(/\s/g,'');
+  const pw       = pwRaw.trim();
+  const errEl    = document.getElementById('login-err');
 
   if(!email||!pw){
     errEl.textContent='Inserisci email e password.';
     errEl.style.display='block'; return;
   }
 
-  const d=DIPENDENTI.find(x=>x.email.trim().toLowerCase()===email);
+  const d = DIPENDENTI.find(x => x.email.trim().toLowerCase() === email);
+
+  // DEBUG temporaneo — rimuovere dopo il test
+  const pwStore  = JSON.parse(localStorage.getItem('bplus_passwords')||'{}');
+  const pwSalvata = pwStore[String(d?.id)];
+  const pwAttiva  = (pwSalvata != null ? pwSalvata : d?.password) || '';
+  alert(
+    'Step 1 – Email cercata: [' + email + ']\n' +
+    'Trovato: ' + (d ? d.nome+' '+d.cognome : 'NESSUNO') + '\n\n' +
+    'Step 2 – PW inserita: [' + pw + ']\n' +
+    'PW attiva nel record: [' + pwAttiva + ']\n' +
+    'PW da localStorage: [' + (pwSalvata ?? 'nessuna') + ']\n' +
+    'PW dal record: [' + (d?.password ?? 'nessuna') + ']\n\n' +
+    'Corrispondenza: ' + (pw === pwAttiva ? 'SI ✅' : 'NO ❌')
+  );
+
   if(!d){
-    errEl.textContent=`Email non trovata. (${DIPENDENTI.length} utenti caricati)`;
+    errEl.textContent='Email non trovata. ('+DIPENDENTI.length+' utenti caricati)';
     errEl.style.display='block'; return;
   }
 
-  // Password: controlla prima localStorage, poi quella nel record
-  const pwStore=JSON.parse(localStorage.getItem('bplus_passwords')||'{}');
-  const pwSalvata=pwStore[String(d.id)];
-  const pwAttiva=(pwSalvata!=null?pwSalvata:d.password)||'';
-
-  if(pwAttiva!=='' && pw!==pwAttiva){
+  if(pwAttiva !== '' && pw !== pwAttiva){
     errEl.textContent='Password non corretta.';
     errEl.style.display='block'; return;
   }
 
   // LOGIN OK
-  UTENTE_CORRENTE=d;
-  RUOLO_CORRENTE=d.ruolo;
-  NEGOZIO_CORRENTE=d.ruolo===2?d.negozio:null;
-  localStorage.setItem('bplus_session',JSON.stringify({id:d.id,ts:Date.now()}));
+  UTENTE_CORRENTE   = d;
+  RUOLO_CORRENTE    = d.ruolo;
+  NEGOZIO_CORRENTE  = d.ruolo===2 ? d.negozio : null;
+  localStorage.setItem('bplus_session', JSON.stringify({id:d.id, ts:Date.now()}));
   const av=$('sb-avatar'); if(av) av.textContent=initials(d);
   const nm=$('sb-name');   if(nm) nm.textContent=`${d.nome} ${d.cognome}`;
   const rl=$('sb-role');   if(rl) rl.textContent=RUOLI[d.ruolo]||'';
-  const ls=$('login-screen'); if(ls) ls.style.display='none';
-  const am=$('app-main');     if(am) am.style.display='';
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('app-main').style.display='';
   if(errEl) errEl.style.display='none';
   adaptNavToRole();
   initAssegnazioni(null);

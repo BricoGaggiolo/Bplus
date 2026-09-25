@@ -6299,29 +6299,15 @@ if(NOTIFICHE.length===0){
 (function(){
   const BASE = '/Bplus';
 
-  // Registra Service Worker
+  // Registra Service Worker (solo notifiche push, nessun caching)
   if('serviceWorker' in navigator){
     navigator.serviceWorker.register(BASE+'/sw.js', {scope: BASE+'/'})
       .then(reg=>{
         console.log('[SW] Registrato:', reg.scope);
-        // Controlla aggiornamenti ogni 60 minuti
-        setInterval(()=>{ reg.update(); }, 60*60*1000);
-        // Nuovo SW in attesa → mostra banner
-        reg.addEventListener('updatefound', ()=>{
-          const sw = reg.installing;
-          sw.addEventListener('statechange', ()=>{
-            if(sw.state==='installed' && navigator.serviceWorker.controller){
-              mostraBannerUpdate();
-            }
-          });
-        });
+        // Controlla aggiornamenti ogni ora
+        setInterval(()=>reg.update(), 60*60*1000);
       })
       .catch(e=>console.warn('[SW] Errore:', e));
-
-    // Quando il nuovo SW prende controllo → ricarica
-    navigator.serviceWorker.addEventListener('controllerchange', ()=>{
-      window.location.reload();
-    });
   }
 
   // Banner aggiornamento disponibile

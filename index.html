@@ -2145,25 +2145,15 @@ function doLogin(){
   }
 
   const d = DIPENDENTI.find(x => x.email.trim().toLowerCase() === email);
-
-  // DEBUG temporaneo — rimuovere dopo il test
-  const pwStore  = JSON.parse(localStorage.getItem('bplus_passwords')||'{}');
-  const pwSalvata = pwStore[String(d?.id)];
-  const pwAttiva  = (pwSalvata != null ? pwSalvata : d?.password) || '';
-  alert(
-    'Step 1 – Email cercata: [' + email + ']\n' +
-    'Trovato: ' + (d ? d.nome+' '+d.cognome : 'NESSUNO') + '\n\n' +
-    'Step 2 – PW inserita: [' + pw + ']\n' +
-    'PW attiva nel record: [' + pwAttiva + ']\n' +
-    'PW da localStorage: [' + (pwSalvata ?? 'nessuna') + ']\n' +
-    'PW dal record: [' + (d?.password ?? 'nessuna') + ']\n\n' +
-    'Corrispondenza: ' + (pw === pwAttiva ? 'SI ✅' : 'NO ❌')
-  );
-
   if(!d){
     errEl.textContent='Email non trovata. ('+DIPENDENTI.length+' utenti caricati)';
     errEl.style.display='block'; return;
   }
+
+  // Confronto password: trim su entrambi per evitare spazi invisibili
+  const pwStore   = JSON.parse(localStorage.getItem('bplus_passwords')||'{}');
+  const pwSalvata = pwStore[String(d.id)];
+  const pwAttiva  = ((pwSalvata != null ? pwSalvata : d.password) || '').trim();
 
   if(pwAttiva !== '' && pw !== pwAttiva){
     errEl.textContent='Password non corretta.';
@@ -2175,15 +2165,26 @@ function doLogin(){
   RUOLO_CORRENTE    = d.ruolo;
   NEGOZIO_CORRENTE  = d.ruolo===2 ? d.negozio : null;
   localStorage.setItem('bplus_session', JSON.stringify({id:d.id, ts:Date.now()}));
+
   const av=$('sb-avatar'); if(av) av.textContent=initials(d);
   const nm=$('sb-name');   if(nm) nm.textContent=`${d.nome} ${d.cognome}`;
   const rl=$('sb-role');   if(rl) rl.textContent=RUOLI[d.ruolo]||'';
-  document.getElementById('login-screen').style.display='none';
-  document.getElementById('app-main').style.display='';
+
+  // Nascondi login, mostra app
+  const ls=document.getElementById('login-screen');
+  const am=document.getElementById('app-main');
+  if(ls){ ls.style.display='none'; ls.style.visibility='hidden'; }
+  if(am){ am.removeAttribute('style'); am.style.display='flex'; }
+
   if(errEl) errEl.style.display='none';
-  adaptNavToRole();
-  initAssegnazioni(null);
-  render('dashboard');
+
+  try{ adaptNavToRole(); }catch(e){ console.error('adaptNavToRole:',e); }
+  try{ initAssegnazioni(null); }catch(e){ console.error('initAssegnazioni:',e); }
+  try{ render('dashboard'); }catch(e){
+    console.error('render dashboard:',e);
+    const c=document.getElementById('content');
+    if(c) c.innerHTML='<div style="padding:20px;color:#fff">Benvenuto '+d.nome+'! <br><small style="color:#aaa">'+e.message+'</small></div>';
+  }
 }
 
 function doLogout(){

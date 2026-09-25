@@ -808,73 +808,44 @@ self.addEventListener('notificationclick',e=>{
 <!-- ════════════════════════════════════════════════════════
      SCHERMATA LOGIN
      ════════════════════════════════════════════════════════ -->
-<div id="login-screen" style="
-  position:fixed;inset:0;z-index:99999;
-  background:var(--bg1);
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  padding:24px;
-">
-  <div style="width:100%;max-width:380px">
-    <!-- Logo -->
-    <div style="text-align:center;margin-bottom:32px">
-      <img src="data:image/webp;base64,UklGRpwCAABXRUJQVlA4WAoAAAAQAAAAIwAAIwAAQUxQSFkAAAABcFtr29LgDvtCTUubbJAFWCCDuLun+uV9W6xLExETYJrFTIGNQ69K13AmbL0Ocwq0A8Fqq8GWod8cSnTi/xWd4FGjLehfSYGWBMdBzdanmeFXV6A54DFKDABWUDggHAIAALAKAJ0BKiQAJAA+USKPRaOiIROcBSQ4BQSzB3dg0Epo+b+qxIDbAbgDeAPQA/UD0xfYrmEr2T8XX0DTI/4D0zflXzkLCCKIsNZaPFO5XUv2s6eOWnRkvhFwf9nmyjAA/veHfAnt/3VUWPyKiHe/WF/tuJ5RsiEc+0CsAd/I95pk53/D+6H//jW/jHlQeQwP/8pXjdQ19hB8uSN+79wc//hTX8Ka/gY8C35w/8OcVcCPXHMqgOsizy8rZRGsVVSMfYMGTnhP8tAPfN/JseTMimqnuv/6Ohv9ock7NL4z/0vn6y8NLHdKhpMWhCcFIJQQ4a9X6c4zIypnNBnPpkXv8O/o9nzcXH2uAr/tTev01iUc/VryuDa8F5rqDIZAK4AyhS3/v/UKG6kjV+14lb+EV/5g2c+h7pNyhRwyQEkfXH/4McyonKpoZQJd8vWvTi/v8W8qbvqN6rpLOJCbWOOLU1XuUIJj+C/7rWwm57YS98Zb939Ivgg9kJh/tm/P/5OSVXl/m9q9WO0f5YgGxwP4uDf+ZyYVkNolYq/xVu0GYu5I51/V4b/xLAn/cV99+2lq6J8l4NbNkJ4mQU1WHuN48Bzx9N4XNSUkpckQPMaRZGtDR/Ylz2QZ6/QJ1CiH0XONU3ZiVri4B4SxS5+yUpT7nPwn1JvG8/9JCMyXvbJCfxPNm0rnvJYAat58aKzTTpxuVNaLXGMmVFa/IAAAAA=="
-        style="width:80px;height:80px;border-radius:16px;object-fit:cover;box-shadow:0 4px 20px rgba(0,0,0,.4)">
-      <div style="font-size:22px;font-weight:800;color:#fff;margin-top:14px;letter-spacing:-.5px">B+ Gestionale HR</div>
-      <div style="font-size:12px;color:var(--text3);margin-top:4px">Accedi con le tue credenziali</div>
+<div id="login-screen" style="position:fixed;inset:0;z-index:99999;background:#111;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;">
+  <div style="width:100%;max-width:360px">
+    <div style="text-align:center;margin-bottom:28px">
+      <img src="data:image/webp;base64,UklGRpwCAABXRUJQVlA4WAoAAAAQAAAAIwAAIwAAQUxQSFkAAAABcFtr29LgDvtCTUubbJAFWCCDuLun+uV9W6xLExETYJrFTIGNQ69K13AmbL0Ocwq0A8Fqq8GWod8cSnTi/xWd4FGjLehfSYGWBMdBzdanmeFXV6A54DFKDABWUDggHAIAALAKAJ0BKiQAJAA+USKPRaOiIROcBSQ4BQSzB3dg0Epo+b+qxIDbAbgDeAPQA/UD0xfYrmEr2T8XX0DTI/4D0zflXzkLCCKIsNZaPFO5XUv2s6eOWnRkvhFwf9nmyjAA/veHfAnt/3VUWPyKiHe/WF/tuJ5RsiEc+0CsAd/I95pk53/D+6H//jW/jHlQeQwP/8pXjdQ19hB8uSN+79wc//hTX8Ka/gY8C35w/8OcVcCPXHMqgOsizy8rZRGsVVSMfYMGTnhP8tAPfN/JseTMimqnuv/6Ohv9ock7NL4z/0vn6y8NLHdKhpMWhCcFIJQQ4a9X6c4zIypnNBnPpkXv8O/o9nzcXH2uAr/tTev01iUc/VryuDa8F5rqDIZAK4AyhS3/v/UKG6kjV+14lb+EV/5g2c+h7pNyhRwyQEkfXH/4McyonKpoZQJd8vWvTi/v8W8qbvqN6rpLOJCbWOOLU1XuUIJj+C/7rWwm57YS98Zb939Ivgg9kJh/tm/P/5OSVXl/m9q9WO0f5YgGxwP4uDf+ZyYVkNolYq/xVu0GYu5I51/V4b/xLAn/cV99+2lq6J8l4NbNkJ4mQU1WHuN48Bzx9N4XNSUkpckQPMaRZGtDR/Ylz2QZ6/QJ1CiH0XONU3ZiVri4B4SxS5+yUpT7nPwn1JvG8/9JCMyXvbJCfxPNm0rnvJYAat58aKzTTpxuVNaLXGMmVFa/IAAAAA==" style="width:72px;height:72px;border-radius:14px;object-fit:cover">
+      <div style="font-size:20px;font-weight:800;color:#fff;margin-top:12px">B+ Gestionale HR</div>
+      <div style="font-size:12px;color:#888;margin-top:4px">La Quattro S.r.l.</div>
     </div>
-
-    <!-- Form -->
-    <div style="background:var(--bg2);border-radius:14px;padding:24px;border:1px solid var(--border)">
-      <div class="form-group mb12">
-        <label class="label">Email</label>
-        <input class="input" id="login-email" type="email"
-          placeholder="nome.cognome@laquattrosrl.it"
-          autocomplete="username"
-          autocapitalize="none"
-          autocorrect="off"
-          spellcheck="false"
-          style="font-size:16px"
-          onkeydown="if(event.key==='Enter') document.getElementById('login-pw').focus()">
+    <div style="background:#1e1e1e;border-radius:12px;padding:20px;border:1px solid #333">
+      <div style="margin-bottom:14px">
+        <label style="display:block;font-size:11px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Email</label>
+        <input id="login-email" type="text"
+          inputmode="email"
+          autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+          placeholder="nome@laquattrosrl.it"
+          style="width:100%;box-sizing:border-box;background:#2a2a2a;border:1px solid #444;border-radius:8px;padding:12px 14px;color:#fff;font-size:16px;outline:none"
+          onkeydown="if(event.key==='Enter'){document.getElementById('login-pw').focus();}">
       </div>
-      <div class="form-group mb8">
-        <label class="label">Password</label>
-        <div style="position:relative">
-          <input class="input" id="login-pw" type="text"
-            placeholder="password"
-            autocomplete="current-password"
-            autocapitalize="none"
-            autocorrect="off"
-            spellcheck="false"
-            style="font-size:16px;padding-right:42px;-webkit-text-security:disc;text-security:disc"
-            onkeydown="if(event.key==='Enter') doLogin()">
-          <button onclick="toggleLoginPw()"
-            style="position:absolute;right:10px;top:50%;transform:translateY(-50%);
-              background:none;border:none;color:var(--text3);cursor:pointer;font-size:16px;padding:4px">
-            👁
-          </button>
+      <div style="margin-bottom:8px">
+        <label style="display:block;font-size:11px;font-weight:700;color:#aaa;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Password</label>
+        <input id="login-pw" type="text"
+          autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+          placeholder="password"
+          style="width:100%;box-sizing:border-box;background:#2a2a2a;border:1px solid #444;border-radius:8px;padding:12px 14px;color:#fff;font-size:16px;outline:none"
+          onkeydown="if(event.key==='Enter'){doLogin();}">
+        <div style="text-align:right;margin-top:4px">
+          <span id="pw-vis-toggle" onclick="toggleLoginPwVis()" style="font-size:11px;color:#888;cursor:pointer">Nascondi password</span>
         </div>
       </div>
-      <!-- Debug: mostra cosa sta per essere inviato -->
-      <div id="login-debug" style="display:none;background:var(--bg3);border-radius:6px;padding:8px 10px;margin-bottom:10px;font-size:11px;font-family:monospace;color:var(--text2)"></div>
-      <div id="login-err" style="display:none;color:var(--red-light);font-size:12px;margin-bottom:12px;text-align:center"></div>
-      <button onclick="doLogin()" id="login-btn"
-        style="width:100%;padding:13px;background:var(--red);color:#fff;border:none;
-          border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;
-          transition:opacity .15s;letter-spacing:.3px">
+      <div id="login-debug" style="display:none;background:#111;border-radius:6px;padding:8px;margin-bottom:8px;font-size:11px;font-family:monospace;color:#ccc;word-break:break-all"></div>
+      <div id="login-err" style="display:none;color:#ef9a9a;font-size:12px;margin-bottom:10px;text-align:center;padding:8px;background:#2a0000;border-radius:6px"></div>
+      <button onclick="doLogin()"
+        style="width:100%;padding:14px;background:#c62828;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:8px">
         Accedi →
       </button>
       <button onclick="debugLoginShow()"
-        style="width:100%;margin-top:8px;padding:8px;background:transparent;color:var(--text3);
-          border:1px solid var(--border);border-radius:8px;font-size:11px;cursor:pointer">
+        style="width:100%;padding:10px;background:transparent;color:#666;border:1px solid #333;border-radius:8px;font-size:11px;cursor:pointer">
         🔍 Verifica dati inseriti
       </button>
-    </div>
-    <div style="text-align:center;margin-top:16px;font-size:11px;color:var(--text3)">
-      B+ Gestionale · La Quattro S.r.l.
-    </div>
-    <div style="text-align:center;margin-top:8px">
-      <button onclick="debugLogin()" style="background:transparent;border:none;color:var(--text3);font-size:10px;cursor:pointer;padding:4px 8px;border-radius:4px" title="Debug">ℹ</button>
     </div>
   </div>
 </div>
@@ -2129,28 +2100,36 @@ function updateBottombar(){
    ═══════════════════════════════════════════════════════════ */
 let UTENTE_CORRENTE = null;
 
+function debugLoginShow(){
+  const email = document.getElementById('login-email')?.value || '';
+  const pw    = document.getElementById('login-pw')?.value    || '';
+  const dbg   = document.getElementById('login-debug');
+  if(!dbg) return;
+  dbg.style.display = 'block';
+  dbg.innerHTML =
+    'Email inserita: <strong style="color:#fff">[' + email + ']</strong> (' + email.length + ' car)<br>' +
+    'Password inserita: <strong style="color:#fff">[' + pw + ']</strong> (' + pw.length + ' car)<br>' +
+    'Email attesa 1: <span style="color:#aaa">s.santelena@laquattrosrl.it</span><br>' +
+    'Email attesa 2: <span style="color:#aaa">d.piaia@laquattrosrl.it</span>';
+}
+
+function toggleLoginPwVis(){
+  const el = document.getElementById('login-pw');
+  const lbl = document.getElementById('pw-vis-toggle');
+  if(!el) return;
+  const isText = el.type === 'text';
+  el.type = isText ? 'password' : 'text';
+  if(lbl) lbl.textContent = isText ? 'Nascondi password' : 'Mostra password';
+}
+
 function debugLogin(){
   const info = DIPENDENTI.map(d=>`${d.id}: ${d.email} / pw="${d.password}"`).join('\n');
   const stored = localStorage.getItem('bplus_passwords')||'{}';
-  alert(`Utenti caricati (${DIPENDENTI.length}):\n${info}\n\npasswords in localStorage:\n${stored}`);
-}
-
-function debugLoginShow(){
-  const email=($('login-email')||{value:''}).value;
-  const pw=($('login-pw')||{value:''}).value;
-  const dbg=$('login-debug');
-  if(!dbg) return;
-  dbg.style.display='block';
-  dbg.innerHTML=`Email: [${email}] (${email.length} car)<br>Password: [${pw}] (${pw.length} car)<br>Email trimmed: [${email.trim().toLowerCase()}]<br>PW trimmed: [${pw.trim()}]`;
+  alert(`Utenti caricati (${DIPENDENTI.length}):\n${info}\n\npasswords localStorage:\n${stored}`);
 }
 
 function toggleLoginPw(){
-  const el=$('login-pw');
-  if(!el) return;
-  // Usa -webkit-text-security per nascondere/mostrare senza cambiare type
-  const hidden = el.style.webkitTextSecurity==='disc';
-  el.style.webkitTextSecurity = hidden?'none':'disc';
-  el.style.textSecurity = hidden?'none':'disc';
+  toggleLoginPwVis();
 }
 
 function doLogin(){

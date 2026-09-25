@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Test Login B+</title>
+<style>
+*{box-sizing:border-box}
+body{font-family:sans-serif;background:#111;color:#eee;margin:0;padding:24px;min-height:100vh}
+input{width:100%;background:#222;border:1px solid #444;border-radius:8px;padding:12px;
+  color:#fff;font-size:16px;margin-bottom:12px;outline:none}
+button{width:100%;background:#c62828;color:#fff;border:none;border-radius:8px;
+  padding:14px;font-size:16px;font-weight:700;cursor:pointer;margin-bottom:8px}
+.log{background:#1a1a1a;border-radius:8px;padding:12px;font-size:12px;
+  font-family:monospace;min-height:100px;margin-top:16px;white-space:pre-wrap}
+</style>
+</head>
+<body>
+<h2 style="color:#c62828">🔐 Test Login B+</h2>
+<input id="em" type="text" placeholder="email" autocomplete="off" autocapitalize="off" value="d.piaia@laquattrosrl.it">
+<input id="pw" type="text" placeholder="password" autocomplete="off" autocapitalize="off" value="LaQuattro2">
+<button onclick="test()">Testa credenziali</button>
+<button onclick="goApp()" style="background:#333">➜ Vai all'app (senza login)</button>
+<div class="log" id="log">In attesa...</div>
+<script>
+const UTENTI = [
+  {id:1, email:'s.santelena@laquattrosrl.it', password:'LaQuattro1', nome:'Stefano'},
+  {id:2, email:'d.piaia@laquattrosrl.it',     password:'LaQuattro2', nome:'Davide'}
+];
+
+function log(msg){ document.getElementById('log').textContent += msg + '\n'; }
+
+function test(){
+  document.getElementById('log').textContent = '';
+  const email = document.getElementById('em').value.trim().toLowerCase();
+  const pw    = document.getElementById('pw').value.trim();
+  log('Email: [' + email + '] len=' + email.length);
+  log('PW:    [' + pw    + '] len=' + pw.length);
+  const d = UTENTI.find(u => u.email === email);
+  if(!d){ log('❌ Utente NON trovato'); return; }
+  log('✅ Utente trovato: ' + d.nome);
+  if(pw === d.password){
+    log('✅ Password CORRETTA');
+    log('Salvo sessione e redirect...');
+    localStorage.setItem('bplus_session', JSON.stringify({id:d.id, ts:Date.now()}));
+    setTimeout(()=>{ window.location.href='/Bplus/index.html'; }, 800);
+  } else {
+    log('❌ Password ERRATA');
+    log('Attesa: [' + d.password + '] len=' + d.password.length);
+    // Confronto carattere per carattere
+    for(let i=0;i<Math.max(pw.length,d.password.length);i++){
+      const a=pw.charCodeAt(i)||0, b=d.password.charCodeAt(i)||0;
+      if(a!==b) log('  pos '+i+': inserito='+a+' ('+String.fromCharCode(a)+') atteso='+b+' ('+String.fromCharCode(b)+')');
+    }
+  }
+}
+
+function goApp(){
+  log('Forzo sessione come Davide Piaia...');
+  localStorage.setItem('bplus_session', JSON.stringify({id:2, ts:Date.now()}));
+  window.location.href='/Bplus/index.html';
+}
+</script>
+</body>
+</html>

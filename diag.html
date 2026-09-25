@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>B+ Diagnostica</title>
+<style>
+body{font-family:monospace;background:#111;color:#eee;padding:16px;font-size:13px}
+h2{color:#c62828}
+.ok{color:#4caf50} .err{color:#f44336} .info{color:#2196f3}
+pre{background:#1e1e1e;padding:10px;border-radius:6px;overflow-x:auto;white-space:pre-wrap}
+button{background:#c62828;color:#fff;border:none;padding:10px 18px;border-radius:6px;
+  font-size:13px;cursor:pointer;margin:4px 0;display:block;width:100%}
+</style>
+</head>
+<body>
+<h2>🔍 B+ Diagnostica</h2>
+<div id="out"></div>
+<button onclick="unregisterSW()">🗑 Deregistra Service Worker</button>
+<button onclick="clearAllCaches()">🗑 Cancella tutte le cache</button>
+<button onclick="location.href='/Bplus/'">🏠 Vai all'app</button>
+<script>
+const out = document.getElementById('out');
+function log(msg, cls='') {
+  out.innerHTML += `<div class="${cls}">${msg}</div>`;
+}
+
+log('User Agent: ' + navigator.userAgent, 'info');
+log('Online: ' + navigator.onLine, navigator.onLine?'ok':'err');
+log('SW supportato: ' + ('serviceWorker' in navigator), 'serviceWorker' in navigator?'ok':'err');
+
+if('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(regs => {
+    log(`SW registrati: ${regs.length}`, regs.length>0?'info':'ok');
+    regs.forEach((r,i) => {
+      log(`  [${i}] scope: ${r.scope}`, 'info');
+      log(`       stato: ${r.active?.state||'nessuno'}`, 'info');
+    });
+  });
+}
+
+caches.keys().then(keys => {
+  log(`Cache trovate: ${keys.length}`, 'info');
+  keys.forEach(k => log(`  - ${k}`, 'info'));
+});
+
+// Mostra localStorage
+const sess = localStorage.getItem('bplus_session');
+const pws = localStorage.getItem('bplus_passwords');
+log('Sessione salvata: ' + (sess||'nessuna'), sess?'ok':'err');
+log('Password salvate: ' + (pws||'nessuna'), pws?'ok':'info');
+
+async function unregisterSW() {
+  const regs = await navigator.serviceWorker.getRegistrations();
+  for(const r of regs) await r.unregister();
+  log('✅ Service Worker deregistrati: ' + regs.length, 'ok');
+}
+
+async function clearAllCaches() {
+  const keys = await caches.keys();
+  await Promise.all(keys.map(k => caches.delete(k)));
+  log('✅ Cache cancellate: ' + keys.length, 'ok');
+}
+</script>
+</body>
+</html>

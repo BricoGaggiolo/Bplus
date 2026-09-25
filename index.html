@@ -856,6 +856,9 @@ self.addEventListener('notificationclick',e=>{
     <div style="text-align:center;margin-top:16px;font-size:11px;color:var(--text3)">
       B+ Gestionale · La Quattro S.r.l.
     </div>
+    <div style="text-align:center;margin-top:8px">
+      <button onclick="debugLogin()" style="background:transparent;border:none;color:var(--text3);font-size:10px;cursor:pointer;padding:4px 8px;border-radius:4px" title="Debug">ℹ</button>
+    </div>
   </div>
 </div>
 
@@ -2109,15 +2112,22 @@ function updateBottombar(){
    ═══════════════════════════════════════════════════════════ */
 let UTENTE_CORRENTE = null;
 
+function debugLogin(){
+  const info = DIPENDENTI.map(d=>`${d.id}: ${d.email} / pw="${d.password}"`).join('\n');
+  const stored = localStorage.getItem('bplus_passwords')||'{}';
+  alert(`Utenti caricati (${DIPENDENTI.length}):\n${info}\n\npasswords in localStorage:\n${stored}`);
+}
+
 function doLogin(){
   const email=($('login-email')||{value:''}).value.trim().toLowerCase();
-  const pw=($('login-pw')||{value:''}).value;
+  const pw=($('login-pw')||{value:''}).value.trim();
   const errEl=$('login-err');
   if(!email||!pw){ errEl.textContent='Inserisci email e password.'; errEl.style.display='block'; return; }
   const d=DIPENDENTI.find(x=>x.email.toLowerCase()===email);
   if(!d){ errEl.textContent='Email non trovata.'; errEl.style.display='block'; return; }
   const pwStore=JSON.parse(localStorage.getItem('bplus_passwords')||'{}');
-  const pwAttiva=pwStore[d.id]||d.password||'';
+  // Usa String(d.id) perché le chiavi localStorage sono sempre stringhe
+  const pwAttiva=pwStore[String(d.id)]||d.password||'';
   if(pwAttiva && pw!==pwAttiva){ errEl.textContent='Password non corretta.'; errEl.style.display='block'; return; }
   // OK
   UTENTE_CORRENTE=d;

@@ -828,29 +828,46 @@ self.addEventListener('notificationclick',e=>{
     <div style="background:var(--bg2);border-radius:14px;padding:24px;border:1px solid var(--border)">
       <div class="form-group mb12">
         <label class="label">Email</label>
-        <input class="input" id="login-email" type="email" placeholder="nome.cognome@laquattrosrl.it"
-          autocomplete="username" autocapitalize="none" style="font-size:16px"
+        <input class="input" id="login-email" type="email"
+          placeholder="nome.cognome@laquattrosrl.it"
+          autocomplete="username"
+          autocapitalize="none"
+          autocorrect="off"
+          spellcheck="false"
+          style="font-size:16px"
           onkeydown="if(event.key==='Enter') document.getElementById('login-pw').focus()">
       </div>
-      <div class="form-group mb20">
+      <div class="form-group mb8">
         <label class="label">Password</label>
         <div style="position:relative">
-          <input class="input" id="login-pw" type="password" placeholder="••••••••"
-            autocomplete="current-password" style="font-size:16px;padding-right:42px"
+          <input class="input" id="login-pw" type="text"
+            placeholder="password"
+            autocomplete="current-password"
+            autocapitalize="none"
+            autocorrect="off"
+            spellcheck="false"
+            style="font-size:16px;padding-right:42px;-webkit-text-security:disc;text-security:disc"
             onkeydown="if(event.key==='Enter') doLogin()">
-          <button onclick="togglePwVis('login-pw',this)"
+          <button onclick="toggleLoginPw()"
             style="position:absolute;right:10px;top:50%;transform:translateY(-50%);
               background:none;border:none;color:var(--text3);cursor:pointer;font-size:16px;padding:4px">
             👁
           </button>
         </div>
       </div>
+      <!-- Debug: mostra cosa sta per essere inviato -->
+      <div id="login-debug" style="display:none;background:var(--bg3);border-radius:6px;padding:8px 10px;margin-bottom:10px;font-size:11px;font-family:monospace;color:var(--text2)"></div>
       <div id="login-err" style="display:none;color:var(--red-light);font-size:12px;margin-bottom:12px;text-align:center"></div>
       <button onclick="doLogin()" id="login-btn"
         style="width:100%;padding:13px;background:var(--red);color:#fff;border:none;
           border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;
           transition:opacity .15s;letter-spacing:.3px">
         Accedi →
+      </button>
+      <button onclick="debugLoginShow()"
+        style="width:100%;margin-top:8px;padding:8px;background:transparent;color:var(--text3);
+          border:1px solid var(--border);border-radius:8px;font-size:11px;cursor:pointer">
+        🔍 Verifica dati inseriti
       </button>
     </div>
     <div style="text-align:center;margin-top:16px;font-size:11px;color:var(--text3)">
@@ -2116,6 +2133,24 @@ function debugLogin(){
   const info = DIPENDENTI.map(d=>`${d.id}: ${d.email} / pw="${d.password}"`).join('\n');
   const stored = localStorage.getItem('bplus_passwords')||'{}';
   alert(`Utenti caricati (${DIPENDENTI.length}):\n${info}\n\npasswords in localStorage:\n${stored}`);
+}
+
+function debugLoginShow(){
+  const email=($('login-email')||{value:''}).value;
+  const pw=($('login-pw')||{value:''}).value;
+  const dbg=$('login-debug');
+  if(!dbg) return;
+  dbg.style.display='block';
+  dbg.innerHTML=`Email: [${email}] (${email.length} car)<br>Password: [${pw}] (${pw.length} car)<br>Email trimmed: [${email.trim().toLowerCase()}]<br>PW trimmed: [${pw.trim()}]`;
+}
+
+function toggleLoginPw(){
+  const el=$('login-pw');
+  if(!el) return;
+  // Usa -webkit-text-security per nascondere/mostrare senza cambiare type
+  const hidden = el.style.webkitTextSecurity==='disc';
+  el.style.webkitTextSecurity = hidden?'none':'disc';
+  el.style.textSecurity = hidden?'none':'disc';
 }
 
 function doLogin(){

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>B+ Test Login</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#111;color:#eee;font-family:sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+input{width:100%;padding:12px;background:#222;border:1px solid #444;border-radius:8px;color:#fff;font-size:16px;margin-bottom:12px;display:block}
+button{width:100%;padding:14px;background:#c62828;color:#fff;border:none;border-radius:8px;font-size:16px;font-weight:700;cursor:pointer;margin-bottom:8px}
+#msg{padding:10px;border-radius:6px;font-size:13px;margin-bottom:10px;display:none;text-align:center}
+#app{display:none;padding:20px;font-size:16px}
+</style>
+</head>
+<body>
+<div style="width:100%;max-width:360px">
+  <h2 style="text-align:center;color:#c62828;margin-bottom:20px">B+ Test Login</h2>
+  
+  <div id="login-box">
+    <input id="em" type="text" placeholder="email" autocomplete="off" autocapitalize="off">
+    <input id="pw" type="text" placeholder="password" autocomplete="off" autocapitalize="off">
+    <div id="msg"></div>
+    <button onclick="login()">Accedi</button>
+    <button onclick="debug()" style="background:#333;font-size:13px">Debug</button>
+    <div id="dbg" style="background:#1a1a1a;border-radius:6px;padding:10px;font-size:11px;font-family:monospace;margin-top:8px;display:none;word-break:break-all"></div>
+  </div>
+  
+  <div id="app">
+    <div style="color:#4caf50;font-size:18px;font-weight:700;margin-bottom:12px">✅ Login riuscito!</div>
+    <div id="welcome"></div>
+    <button onclick="logout()" style="margin-top:16px;background:#333">Logout</button>
+  </div>
+</div>
+
+<script>
+const USERS = [
+  {id:1, email:'s.santelena@laquattrosrl.it', password:'LaQuattro1', nome:'Stefano Santelena'},
+  {id:2, email:'d.piaia@laquattrosrl.it',     password:'LaQuattro2', nome:'Davide Piaia'},
+];
+
+function login(){
+  const em = document.getElementById('em').value.trim().toLowerCase();
+  const pw = document.getElementById('pw').value.trim();
+  const msg = document.getElementById('msg');
+  
+  const u = USERS.find(x => x.email === em);
+  if(!u){
+    msg.style.cssText='display:block;background:#3a0000;color:#ef9a9a';
+    msg.textContent = 'Email non trovata. Hai scritto: '+em;
+    return;
+  }
+  
+  const stored = JSON.parse(localStorage.getItem('bplus_pw')||'{}');
+  const pwOk = stored[u.id] || u.password;
+  
+  if(pw !== pwOk){
+    msg.style.cssText='display:block;background:#3a0000;color:#ef9a9a';
+    msg.textContent = 'Password errata. Hai scritto: ['+pw+'] Attesa: ['+pwOk+']';
+    return;
+  }
+  
+  // OK
+  msg.style.display='none';
+  document.getElementById('login-box').style.display='none';
+  const app=document.getElementById('app');
+  app.style.display='block';
+  document.getElementById('welcome').innerHTML = 
+    '<strong>'+u.nome+'</strong><br><span style="color:#aaa;font-size:13px">'+u.email+'</span>';
+  localStorage.setItem('bplus_test_session', JSON.stringify({id:u.id, ts:Date.now()}));
+}
+
+function logout(){
+  localStorage.removeItem('bplus_test_session');
+  document.getElementById('login-box').style.display='block';
+  document.getElementById('app').style.display='none';
+  document.getElementById('em').value='';
+  document.getElementById('pw').value='';
+}
+
+function debug(){
+  const em=document.getElementById('em').value;
+  const pw=document.getElementById('pw').value;
+  const dbg=document.getElementById('dbg');
+  dbg.style.display='block';
+  dbg.innerHTML=
+    'Email: ['+em+'] len:'+em.length+'<br>'+
+    'Email trim+lower: ['+em.trim().toLowerCase()+']<br>'+
+    'PW: ['+pw+'] len:'+pw.length+'<br>'+
+    'PW trim: ['+pw.trim()+']<br>'+
+    'Utenti: '+USERS.length+'<br>'+
+    'Match email: '+(USERS.find(x=>x.email===em.trim().toLowerCase())?'SI':'NO');
+}
+
+// Auto-login da sessione
+const sess=JSON.parse(localStorage.getItem('bplus_test_session')||'null');
+if(sess && Date.now()-sess.ts < 8*60*60*1000){
+  const u=USERS.find(x=>x.id===sess.id);
+  if(u){
+    document.getElementById('login-box').style.display='none';
+    document.getElementById('app').style.display='block';
+    document.getElementById('welcome').innerHTML='<strong>'+u.nome+'</strong> (sessione attiva)';
+  }
+}
+</script>
+</body>
+</html>

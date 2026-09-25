@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reset B+</title>
+<style>
+body{font-family:sans-serif;background:#111;color:#eee;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;min-height:100vh;margin:0;padding:20px;text-align:center}
+h2{color:#c62828;margin-bottom:8px}
+p{color:#888;font-size:14px;margin-bottom:24px}
+button{background:#c62828;color:#fff;border:none;padding:14px 28px;border-radius:8px;
+  font-size:16px;font-weight:700;cursor:pointer;margin:6px;display:block;width:100%;max-width:300px}
+.log{background:#1e1e1e;border-radius:8px;padding:12px;margin-top:16px;font-size:12px;
+  font-family:monospace;text-align:left;max-width:360px;width:100%;min-height:60px}
+</style>
+</head>
+<body>
+<h2>🔄 Reset B+ Gestionale</h2>
+<p>Tocca il pulsante per ripristinare l'app</p>
+<button onclick="resetApp()">🗑 Reset completo e vai all'app</button>
+<div class="log" id="log">In attesa...</div>
+<script>
+const log = document.getElementById('log');
+function addLog(msg){ log.innerHTML += msg + '<br>'; }
+
+async function resetApp(){
+  log.innerHTML = '';
+  try {
+    // 1. Deregistra tutti i Service Worker
+    if('serviceWorker' in navigator){
+      const regs = await navigator.serviceWorker.getRegistrations();
+      for(const r of regs){ await r.unregister(); addLog('✅ SW deregistrato: '+r.scope); }
+      if(regs.length===0) addLog('ℹ Nessun SW trovato');
+    }
+    // 2. Cancella tutte le cache
+    const keys = await caches.keys();
+    for(const k of keys){ await caches.delete(k); addLog('✅ Cache cancellata: '+k); }
+    if(keys.length===0) addLog('ℹ Nessuna cache trovata');
+    // 3. Redirect all'app dopo 1 secondo
+    addLog('✅ Reset completato! Reindirizzo...');
+    setTimeout(()=>{ window.location.replace('/Bplus/index.html?v='+Date.now()); }, 1000);
+  } catch(e){
+    addLog('❌ Errore: '+e.message);
+  }
+}
+// Esegui automaticamente
+resetApp();
+</script>
+</body>
+</html>

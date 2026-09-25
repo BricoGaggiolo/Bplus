@@ -2119,17 +2119,34 @@ function debugLogin(){
 }
 
 function doLogin(){
-  const email=($('login-email')||{value:''}).value.trim().toLowerCase();
-  const pw=($('login-pw')||{value:''}).value.trim();
+  const emailRaw=($('login-email')||{value:''}).value;
+  const pwRaw=($('login-pw')||{value:''}).value;
+  const email=emailRaw.trim().toLowerCase().replace(/\s/g,'');
+  const pw=pwRaw.trim();
   const errEl=$('login-err');
-  if(!email||!pw){ errEl.textContent='Inserisci email e password.'; errEl.style.display='block'; return; }
-  const d=DIPENDENTI.find(x=>x.email.toLowerCase()===email);
-  if(!d){ errEl.textContent='Email non trovata.'; errEl.style.display='block'; return; }
+
+  if(!email||!pw){
+    errEl.textContent='Inserisci email e password.';
+    errEl.style.display='block'; return;
+  }
+
+  const d=DIPENDENTI.find(x=>x.email.trim().toLowerCase()===email);
+  if(!d){
+    errEl.textContent=`Email non trovata. (${DIPENDENTI.length} utenti caricati)`;
+    errEl.style.display='block'; return;
+  }
+
+  // Password: controlla prima localStorage, poi quella nel record
   const pwStore=JSON.parse(localStorage.getItem('bplus_passwords')||'{}');
-  // Usa String(d.id) perché le chiavi localStorage sono sempre stringhe
-  const pwAttiva=pwStore[String(d.id)]||d.password||'';
-  if(pwAttiva && pw!==pwAttiva){ errEl.textContent='Password non corretta.'; errEl.style.display='block'; return; }
-  // OK
+  const pwSalvata=pwStore[String(d.id)];
+  const pwAttiva=(pwSalvata!=null?pwSalvata:d.password)||'';
+
+  if(pwAttiva!=='' && pw!==pwAttiva){
+    errEl.textContent='Password non corretta.';
+    errEl.style.display='block'; return;
+  }
+
+  // LOGIN OK
   UTENTE_CORRENTE=d;
   RUOLO_CORRENTE=d.ruolo;
   NEGOZIO_CORRENTE=d.ruolo===2?d.negozio:null;
@@ -2139,7 +2156,7 @@ function doLogin(){
   const rl=$('sb-role');   if(rl) rl.textContent=RUOLI[d.ruolo]||'';
   const ls=$('login-screen'); if(ls) ls.style.display='none';
   const am=$('app-main');     if(am) am.style.display='';
-  errEl.style.display='none';
+  if(errEl) errEl.style.display='none';
   adaptNavToRole();
   initAssegnazioni(null);
   render('dashboard');

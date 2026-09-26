@@ -1420,6 +1420,7 @@ function handleCTA(){
 
 function render(page){
   const c=$('content');
+  if(!c) return;
   const pages={
     dashboard:renderDashboard,
     dipendenti:renderDipendenti,
@@ -1431,11 +1432,19 @@ function render(page){
     report:renderReport,
   };
   currentPage=page;
-  c.innerHTML=(pages[page]||renderDashboard)();
-  attachEvents(page);
-  // Aggiorna bottombar mobile
-  bbActive(page);
-  // Aggiorna titolo topbar
+  try{
+    c.innerHTML=(pages[page]||renderDashboard)();
+  }catch(e){
+    c.innerHTML=`<div style="padding:20px;background:#1e1e1e;border-radius:8px;margin:16px">
+      <div style="color:#ef5350;font-weight:700;margin-bottom:8px">❌ Errore in render('${page}')</div>
+      <div style="color:#fff;font-family:monospace;font-size:12px;word-break:break-all">${e.message}</div>
+      <div style="color:#aaa;font-size:11px;margin-top:8px;word-break:break-all">${e.stack||''}</div>
+    </div>`;
+    console.error('render error:', e);
+    return;
+  }
+  try{ attachEvents(page); }catch(e){ console.error('attachEvents:',e); }
+  try{ bbActive(page); }catch(e){ console.error('bbActive:',e); }
   const titles={dashboard:'Dashboard',dipendenti:'Dipendenti',turni:'Turni',
     storico:'Storico turni',assenze:'Assenze & Ferie',negozi:'Punti Vendita',
     corsi:'Corsi',report:'Report'};

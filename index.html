@@ -838,11 +838,11 @@ self.addEventListener('notificationclick',e=>{
       </div>
       <div id="login-debug" style="display:none;background:#111;border-radius:6px;padding:8px;margin-bottom:8px;font-size:11px;font-family:monospace;color:#ccc;word-break:break-all"></div>
       <div id="login-err" style="display:none;color:#ef9a9a;font-size:12px;margin-bottom:10px;text-align:center;padding:8px;background:#2a0000;border-radius:6px"></div>
-      <button onclick="doLogin()"
+      <button id="login-btn"
         style="width:100%;padding:14px;background:#c62828;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:8px">
         Accedi →
       </button>
-      <button onclick="debugLoginShow()"
+      <button id="login-debug-btn"
         style="width:100%;padding:10px;background:transparent;color:#666;border:1px solid #333;border-radius:8px;font-size:11px;cursor:pointer">
         🔍 Verifica dati inseriti
       </button>
@@ -6328,6 +6328,20 @@ if(NOTIFICHE.length===0){
 }
 
 /* ── INIT ────────────────────────────────────────────────── */
+// Aggancia listener login (evita problemi con onclick inline su mobile)
+document.addEventListener('DOMContentLoaded', function(){
+  const btn = document.getElementById('login-btn');
+  if(btn) btn.addEventListener('click', doLogin);
+  const dbg = document.getElementById('login-debug-btn');
+  if(dbg) dbg.addEventListener('click', debugLoginShow);
+  const pwInput = document.getElementById('login-pw');
+  if(pwInput) pwInput.addEventListener('keydown', function(e){ if(e.key==='Enter') doLogin(); });
+  const emInput = document.getElementById('login-email');
+  if(emInput) emInput.addEventListener('keydown', function(e){ if(e.key==='Enter'){ document.getElementById('login-pw')?.focus(); } });
+  const visBtn = document.getElementById('pw-vis-toggle');
+  if(visBtn) visBtn.addEventListener('click', toggleLoginPwVis);
+});
+
 (function(){
   initAssegnazioni(null);
   if(checkSessione()){

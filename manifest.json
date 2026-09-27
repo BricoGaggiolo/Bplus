@@ -6,13 +6,9 @@
   "scope": "/Bplus/",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#1a1a1a",
+  "background_color": "#111111",
   "theme_color": "#c62828",
   "lang": "it",
-  "categories": [
-    "business",
-    "productivity"
-  ],
   "icons": [
     {
       "src": "icons/icon-72.png",

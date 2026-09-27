@@ -2170,30 +2170,40 @@ function doLogin(){
   }
 
   // LOGIN OK
-  UTENTE_CORRENTE   = d;
-  RUOLO_CORRENTE    = d.ruolo;
-  NEGOZIO_CORRENTE  = d.ruolo===2 ? d.negozio : null;
+  UTENTE_CORRENTE  = d;
+  RUOLO_CORRENTE   = d.ruolo;
+  NEGOZIO_CORRENTE = d.ruolo===2 ? d.negozio : null;
   localStorage.setItem('bplus_session', JSON.stringify({id:d.id, ts:Date.now()}));
 
-  const av=$('sb-avatar'); if(av) av.textContent=initials(d);
-  const nm=$('sb-name');   if(nm) nm.textContent=`${d.nome} ${d.cognome}`;
-  const rl=$('sb-role');   if(rl) rl.textContent=RUOLI[d.ruolo]||'';
+  const av=document.getElementById('sb-avatar'); if(av) av.textContent=initials(d);
+  const nm=document.getElementById('sb-name');   if(nm) nm.textContent=d.nome+' '+d.cognome;
+  const rl=document.getElementById('sb-role');   if(rl) rl.textContent=RUOLI[d.ruolo]||'';
 
-  // Nascondi login, mostra app
+  // Nascondi login con !important per battere qualsiasi CSS
   const ls=document.getElementById('login-screen');
+  if(ls) ls.style.cssText='display:none!important;visibility:hidden!important';
+
+  // Mostra app con !important
   const am=document.getElementById('app-main');
-  if(ls){ ls.style.display='none'; ls.style.visibility='hidden'; }
-  if(am){ am.removeAttribute('style'); am.style.display='flex'; }
+  if(am) am.style.cssText='display:flex!important;visibility:visible!important';
 
   if(errEl) errEl.style.display='none';
 
-  try{ adaptNavToRole(); }catch(e){ console.error('adaptNavToRole:',e); }
-  try{ initAssegnazioni(null); }catch(e){ console.error('initAssegnazioni:',e); }
-  try{ render('dashboard'); }catch(e){
-    console.error('render dashboard:',e);
-    const c=document.getElementById('content');
-    if(c) c.innerHTML='<div style="padding:20px;color:#fff">Benvenuto '+d.nome+'! <br><small style="color:#aaa">'+e.message+'</small></div>';
-  }
+  // Messaggio benvenuto immediato
+  const ct=document.getElementById('content');
+  if(ct) ct.innerHTML='<div style="padding:32px;text-align:center;color:#fff"><div style="font-size:32px">👋</div><div style="font-size:18px;font-weight:700;margin-top:12px">Benvenuto, '+d.nome+'!</div><div style="color:#888;font-size:13px;margin-top:8px">Caricamento in corso...</div></div>';
+
+  // Avvia app dopo breve delay per permettere al DOM di aggiornarsi
+  setTimeout(function(){
+    try{ adaptNavToRole(); }catch(e){ console.error('adaptNav:',e); }
+    try{ initAssegnazioni(null); }catch(e){ console.error('initAss:',e); }
+    try{
+      render('dashboard');
+    }catch(e){
+      const ct2=document.getElementById('content');
+      if(ct2) ct2.innerHTML='<div style="padding:20px;background:#1e1e1e;border-radius:8px;margin:16px"><div style="color:#ef5350;font-weight:700">Errore dashboard:</div><div style="color:#fff;font-size:12px;word-break:break-all">'+e.message+'</div></div>';
+    }
+  }, 200);
 }
 
 function doLogout(){

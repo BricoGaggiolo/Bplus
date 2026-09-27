@@ -1,4 +1,4 @@
-/* B+ SW v11 - direct bottom navigation */
+/* B+ SW v12 - stable mobile navigation */
 const MOBILE_CSS=`
 html,body{width:100%;min-height:100%;overflow-x:hidden;-webkit-text-size-adjust:100%;touch-action:manipulation}
 body{padding-bottom:calc(76px + env(safe-area-inset-bottom))}
@@ -14,15 +14,9 @@ button,a,input,select,textarea,[role=button]{touch-action:manipulation;-webkit-t
 `;
 const MOBILE_JS=`<script id="bplus-mobile-script">(()=>{
 const pages={"bb-dashboard":"dashboard","bb-turni":"turni","bb-assenze":"assenze","bb-storico":"storico"};
-const bind=()=>{const bar=document.getElementById('bottombar');if(!bar)return;
-const items=[...bar.querySelectorAll('.bb-item')];
-items.forEach(item=>{item.onclick=null;item.onpointerup=null;item.ontouchend=null;const id=item.id;
-item.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();if(id==='bb-more'){if(typeof window.toggleSidebar==='function')window.toggleSidebar();return;}const page=pages[id];if(!page)return;const nav=document.querySelector('.nav-item[data-page="'+page+'"]');if(nav){nav.click();return;}if(typeof window.goPage==='function')window.goPage(page);if(typeof window.bbActive==='function')window.bbActive(page);},{capture:false});
-item.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();item.click();}});
-});
-bar.querySelectorAll('.bb-item').forEach(x=>x.setAttribute('role','button'));
-};
-const start=()=>{bind();setTimeout(bind,100);setTimeout(bind,500);setTimeout(bind,1500);new MutationObserver(bind).observe(document.body,{subtree:true,childList:true});};
+let bound=false;
+function bind(){if(bound)return;const bar=document.getElementById('bottombar');if(!bar)return;const items=[...bar.querySelectorAll('.bb-item')];if(!items.length)return;items.forEach(item=>{if(item.dataset.bplusBound==='1')return;item.dataset.bplusBound='1';const id=item.id;item.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();if(id==='bb-more'){if(typeof window.toggleSidebar==='function')window.toggleSidebar();return;}const page=pages[id];if(!page)return;const nav=document.querySelector('.nav-item[data-page="'+page+'"]');if(nav){nav.click();return;}if(typeof window.goPage==='function')window.goPage(page);if(typeof window.bbActive==='function')window.bbActive(page);},{capture:false});item.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();item.click();}});});bound=true;}
+function start(){bind();[100,500,1200,2500].forEach(ms=>setTimeout(bind,ms));}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
 })();</script>`;
 self.addEventListener('install',e=>e.waitUntil(self.skipWaiting()));

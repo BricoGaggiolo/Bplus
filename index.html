@@ -4,91 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>B+ Gestionale – Accesso</title>
-<link rel="manifest" href="/Bplus/manifest.json">
+<link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#c62828">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;background:#111;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
-body{display:flex;align-items:center;justify-content:center;padding:24px;min-height:100vh}
-.card{width:100%;max-width:360px}
-.logo{text-align:center;margin-bottom:28px}
-.logo img{width:72px;height:72px;border-radius:16px}
-.logo h1{color:#fff;font-size:20px;font-weight:800;margin-top:12px}
-.logo p{color:#666;font-size:13px;margin-top:4px}
-.form{background:#1e1e1e;border-radius:16px;padding:24px;border:1px solid #2a2a2a}
-label{display:block;font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
-input{width:100%;padding:13px 14px;background:#2a2a2a;border:1.5px solid #333;border-radius:10px;
-  color:#fff;font-size:16px;outline:none;margin-bottom:16px;-webkit-appearance:none}
-input:focus{border-color:#c62828}
-.btn{width:100%;padding:14px;background:#c62828;color:#fff;border:none;border-radius:10px;
-  font-size:16px;font-weight:700;cursor:pointer;-webkit-appearance:none}
-.btn:active{opacity:.85}
-.err{color:#ef9a9a;font-size:13px;text-align:center;margin-top:12px;display:none;
-  background:#2a0000;padding:10px;border-radius:8px}
-.footer{text-align:center;color:#444;font-size:11px;margin-top:20px}
+*{box-sizing:border-box;margin:0;padding:0}html,body{height:100%;background:#111;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}body{display:flex;align-items:center;justify-content:center;padding:24px;min-height:100vh}.card{width:100%;max-width:360px}.logo{text-align:center;margin-bottom:28px}.logo img{width:72px;height:72px;border-radius:16px}.logo h1{color:#fff;font-size:20px;font-weight:800;margin-top:12px}.logo p{color:#666;font-size:13px;margin-top:4px}.form{background:#1e1e1e;border-radius:16px;padding:24px;border:1px solid #2a2a2a}label{display:block;font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}input{width:100%;padding:13px 14px;background:#2a2a2a;border:1.5px solid #333;border-radius:10px;color:#fff;font-size:16px;outline:none;margin-bottom:16px;-webkit-appearance:none}input:focus{border-color:#c62828}.btn{width:100%;padding:14px;background:#c62828;color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;-webkit-appearance:none}.btn:active{opacity:.85}.err{color:#ef9a9a;font-size:13px;text-align:center;margin-top:12px;display:none;background:#2a0000;padding:10px;border-radius:8px}.footer{text-align:center;color:#444;font-size:11px;margin-top:20px}
 </style>
 </head>
-<body>
-<div class="card">
-  <div class="logo">
-    <img src="/Bplus/icons/icon-192.png" alt="B+">
-    <h1>B+ Gestionale HR</h1>
-    <p>La Quattro S.r.l.</p>
-  </div>
-  <div class="form">
-    <label for="em">Email</label>
-    <input id="em" type="text" inputmode="email"
-      autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false"
-      placeholder="nome@laquattrosrl.it">
-    <label for="pw">Password</label>
-    <input id="pw" type="password"
-      autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false"
-      placeholder="••••••••">
-    <button class="btn" onclick="login()">Accedi</button>
-    <div class="err" id="err"></div>
-  </div>
-  <div class="footer">B+ Gestionale &middot; La Quattro S.r.l.</div>
-</div>
-
+<body><div class="card"><div class="logo"><img src="./icons/icon-192.png" alt="B+"><h1>B+ Gestionale HR</h1><p>La Quattro S.r.l.</p></div><div class="form"><label for="em">Email</label><input id="em" type="text" inputmode="email" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" placeholder="nome@laquattrosrl.it"><label for="pw">Password</label><input id="pw" type="password" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false" placeholder="••••••••"><button class="btn" onclick="login()">Accedi</button><div class="err" id="err"></div></div><div class="footer">B+ Gestionale &middot; La Quattro S.r.l.</div></div>
 <script>
-var UTENTI = [
-  {id:1, email:'s.santelena@laquattrosrl.it', password:'LaQuattro1', nome:'Stefano', cognome:'Santelena', ruolo:3},
-  {id:2, email:'d.piaia@laquattrosrl.it',     password:'LaQuattro2', nome:'Davide',  cognome:'Piaia',     ruolo:3}
-];
-
-// Controlla se già loggato
-var sess = sessionStorage.getItem('bplus_uid');
-if(sess){ window.location.replace('/Bplus/app.html'); }
-
-function login(){
-  var em = document.getElementById('em').value.trim().toLowerCase();
-  var pw = document.getElementById('pw').value.trim();
-  var err = document.getElementById('err');
-  err.style.display='none';
-  if(!em||!pw){ err.textContent='Inserisci email e password'; err.style.display='block'; return; }
-  var u = null;
-  for(var i=0;i<UTENTI.length;i++){
-    if(UTENTI[i].email===em){ u=UTENTI[i]; break; }
-  }
-  if(!u){ err.textContent='Email non trovata'; err.style.display='block'; return; }
-  // Controlla password (da localStorage se cambiata)
-  var stored = JSON.parse(localStorage.getItem('bplus_passwords')||'{}');
-  var pw_ok = stored[String(u.id)] || u.password;
-  if(pw !== pw_ok){ err.textContent='Password non corretta'; err.style.display='block'; return; }
-  // Salva sessione e vai all'app
-  sessionStorage.setItem('bplus_uid', u.id);
-  sessionStorage.setItem('bplus_ts', Date.now());
-  window.location.replace('/Bplus/app.html');
-}
-
-document.getElementById('pw').addEventListener('keydown', function(e){
-  if(e.key==='Enter') login();
-});
-document.getElementById('em').addEventListener('keydown', function(e){
-  if(e.key==='Enter') document.getElementById('pw').focus();
-});
-</script>
-</body>
-</html>
+var UTENTI=[{id:1,email:'s.santelena@laquattrosrl.it',password:'LaQuattro1',nome:'Stefano',cognome:'Santelena',ruolo:3},{id:2,email:'d.piaia@laquattrosrl.it',password:'LaQuattro2',nome:'Davide',cognome:'Piaia',ruolo:3}];
+var sess=sessionStorage.getItem('bplus_uid');if(sess){window.location.replace('./app.html');}
+function login(){var em=document.getElementById('em').value.trim().toLowerCase(),pw=document.getElementById('pw').value.trim(),err=document.getElementById('err');err.style.display='none';if(!em||!pw){err.textContent='Inserisci email e password';err.style.display='block';return}var u=null;for(var i=0;i<UTENTI.length;i++){if(UTENTI[i].email===em){u=UTENTI[i];break}}if(!u){err.textContent='Email non trovata';err.style.display='block';return}var stored=JSON.parse(localStorage.getItem('bplus_passwords')||'{}'),pw_ok=stored[String(u.id)]||u.password;if(pw!==pw_ok){err.textContent='Password non corretta';err.style.display='block';return}sessionStorage.setItem('bplus_uid',u.id);sessionStorage.setItem('bplus_ts',Date.now());window.location.replace('./app.html')}
+document.getElementById('pw').addEventListener('keydown',function(e){if(e.key==='Enter')login()});document.getElementById('em').addEventListener('keydown',function(e){if(e.key==='Enter')document.getElementById('pw').focus()});
+</script></body></html>

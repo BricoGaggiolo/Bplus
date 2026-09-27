@@ -1,27 +1,9 @@
-/* B+ SW v12 - stable mobile navigation */
-const MOBILE_CSS=`
-html,body{width:100%;min-height:100%;overflow-x:hidden;-webkit-text-size-adjust:100%;touch-action:manipulation}
-body{padding-bottom:calc(76px + env(safe-area-inset-bottom))}
-#app-main{min-height:100dvh;width:100%;display:flex!important;visibility:visible!important}.main{min-width:0;width:100%}.content{padding-bottom:calc(100px + env(safe-area-inset-bottom));overflow-x:hidden}
-#bottombar{position:fixed!important;left:0!important;right:0!important;bottom:0!important;width:100%!important;height:calc(68px + env(safe-area-inset-bottom))!important;padding:6px 6px env(safe-area-inset-bottom)!important;display:flex!important;z-index:2147483647!important;pointer-events:auto!important;touch-action:manipulation!important;background:var(--bg2,#1e1e1e)!important;border-top:1px solid var(--border,#333)!important;box-shadow:0 -6px 20px rgba(0,0,0,.35)!important}
-#bottombar .bb-item{flex:1!important;min-width:0!important;height:54px!important;display:flex!important;align-items:center!important;justify-content:center!important;flex-direction:column!important;gap:2px!important;padding:5px 2px!important;border-radius:10px!important;cursor:pointer!important;-webkit-tap-highlight-color:transparent!important;user-select:none!important;position:relative!important;z-index:2!important;pointer-events:auto!important;touch-action:manipulation!important}
-#bottombar .bb-icon,#bottombar .bb-label{pointer-events:none!important}.bb-icon{font-size:21px!important;line-height:24px!important}.bb-label{font-size:10px!important;line-height:14px!important;white-space:nowrap!important}.bb-item.active{background:var(--red-bg,#2a0000)!important;color:#fff!important}
-#bplus-touch-proxy{display:none!important}
-#mob-overlay{z-index:1!important}.sidebar{z-index:2147483001!important}.modal-overlay{z-index:2147483002!important}.notif-panel{z-index:2147483003!important}
-button,a,input,select,textarea,[role=button]{touch-action:manipulation;-webkit-tap-highlight-color:transparent}button{min-height:42px}.btn-icon{min-width:42px}
-@media(max-width:700px){body{font-size:14px!important}.topbar{height:56px!important;padding:0 10px!important}.content{padding:12px 10px calc(100px + env(safe-area-inset-bottom))!important}.page-title{font-size:16px!important}.grid,.two-col,.three-col{grid-template-columns:1fr!important}.modal{width:calc(100vw - 20px)!important;max-width:none!important;max-height:calc(100dvh - 24px)!important}.modal-body{overflow-y:auto!important;-webkit-overflow-scrolling:touch!important}.form-row{grid-template-columns:1fr!important}.table-wrap{max-width:100%!important;overflow-x:auto!important}.table{min-width:620px}.sidebar{width:min(86vw,320px)!important}.notif-panel{width:min(92vw,360px)!important;max-height:calc(100dvh - 56px)!important}}
-@media(max-width:420px){#bottombar .bb-icon{font-size:19px!important}.bb-label{font-size:9px!important}.content{padding-left:8px!important;padding-right:8px!important}.topbar-left img{display:none!important}}
-`;
-const MOBILE_JS=`<script id="bplus-mobile-script">(()=>{
-const pages={"bb-dashboard":"dashboard","bb-turni":"turni","bb-assenze":"assenze","bb-storico":"storico"};
-let bound=false;
-function bind(){if(bound)return;const bar=document.getElementById('bottombar');if(!bar)return;const items=[...bar.querySelectorAll('.bb-item')];if(!items.length)return;items.forEach(item=>{if(item.dataset.bplusBound==='1')return;item.dataset.bplusBound='1';const id=item.id;item.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();if(id==='bb-more'){if(typeof window.toggleSidebar==='function')window.toggleSidebar();return;}const page=pages[id];if(!page)return;const nav=document.querySelector('.nav-item[data-page="'+page+'"]');if(nav){nav.click();return;}if(typeof window.goPage==='function')window.goPage(page);if(typeof window.bbActive==='function')window.bbActive(page);},{capture:false});item.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();item.click();}});});bound=true;}
-function start(){bind();[100,500,1200,2500].forEach(ms=>setTimeout(bind,ms));}
-if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
-})();</script>`;
-self.addEventListener('install',e=>e.waitUntil(self.skipWaiting()));
-self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
-self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;const url=new URL(e.request.url);e.respondWith(fetch(e.request,{cache:'no-store'}).then(async r=>{if(!r.ok)return r;if(url.pathname.endsWith('/app.html')){let h=await r.text();h=h.replace('<div class="app"<div class="app" id="app-main" style="display:none">','<div class="app" id="app-main" style="display:flex">');h=h.replace(/<style id="bplus-mobile-patch">[\s\S]*?<\/style>/g,'');h=h.replace('</head>','<style id="bplus-mobile-patch">'+MOBILE_CSS+'</style></head>');h=h.replace(/<script id="bplus-mobile-script">[\s\S]*?<\/script>/g,'');h=h.replace('</body>',MOBILE_JS+'</body>');return new Response(h,{status:r.status,statusText:r.statusText,headers:{'Content-Type':'text/html; charset=utf-8','Cache-Control':'no-store'}})}return r}).catch(()=>caches.match(e.request)))});
-self.addEventListener('push',e=>{const d=e.data?e.data.json():{};e.waitUntil(self.registration.showNotification(d.title||'B+ Gestionale',{body:d.body||'',icon:'./icons/icon-192.png',badge:'./icons/icon-72.png',tag:d.tag||'bplus',data:{url:d.url||'./'}}))});
-self.addEventListener('notificationclick',e=>{e.notification.close();e.waitUntil(clients.openWindow(e.notification.data?.url||'./'))});
-self.addEventListener('message',e=>{if(e.data?.type==='SKIP_WAITING'){self.skipWaiting();e.source?.postMessage({type:'SW_UPDATED'})}});
+/* B+ service worker intentionally disabled. The app is now self-contained. */
+self.addEventListener('install', event => { self.skipWaiting(); });
+self.addEventListener('activate', event => {
+  event.waitUntil((async () => {
+    await self.registration.unregister();
+    const clientsList = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
+    for (const client of clientsList) client.postMessage({ type: 'BPLUS_SW_DISABLED' });
+  })());
+});
